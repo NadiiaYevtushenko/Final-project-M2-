@@ -1,0 +1,285 @@
+.visually-hidden,
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  clip: rect(0 0 0 0);
+}
+
+.sectionContainer {
+  padding: 40px 20px;
+}
+
+.flexContainer {
+  display: flex;
+  gap: 20px;
+}
+
+.title {
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  padding-bottom: 80px;
+  margin-bottom: 40px;
+
+  font-size: 62px;
+  font-weight: 800;
+  letter-spacing: -0.93px;
+  line-height: 67px;
+}
+
+.title span {
+  position: absolute;
+  bottom: 0;
+  left: 100%;
+  animation: running-text 20s linear infinite;
+  white-space: nowrap;
+  color: var(--accentText);
+}
+
+@keyframes running-text {
+  0% {
+    left: 100%;
+  }
+
+  100% {
+    left: -1800px;
+  }
+}
+
+.columnWidth {
+  width: 50%;
+}
+
+.containerGradient {
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  border-radius: 10px;
+}
+
+.columnGradient {
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse at top left,
+      var(--gradientDark),
+      transparent),
+    radial-gradient(ellipse at bottom right, var(--gradientLight), transparent);
+}
+
+.text {
+  color: var(--colorProduct);
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.285px;
+  line-height: 24px;
+  max-width: 400px;
+  margin-bottom: 80px;
+}
+
+.imgGradient {
+  position: relative;
+  width: 50%;
+  margin: 0 80px;
+}
+
+.team {
+  position: absolute;
+  top: 40px;
+  left: -100px;
+  z-index: 100;
+}
+
+.soldiers {
+  position: absolute;
+  z-index: 100;
+  bottom: 40px;
+  right: -100px;
+}
+
+.productionTitle {
+  font-size: 46px;
+  font-weight: 800;
+  letter-spacing: -0.855px;
+  text-transform: capitalize;
+  margin-bottom: 24px;
+}
+
+.description {
+  display: flex;
+  gap: 50px;
+}
+
+.descriptionRevert {
+  display: flex;
+  gap: 50px;
+  flex-direction: column-reverse;
+}
+
+
+.aboutProduct {
+  color: var(--colorProduct);
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.285px;
+  line-height: 24px;
+  border-bottom: 1px solid var(--colorProduct);
+  padding-bottom: 40px;
+}
+
+.flexContainerWrapp {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.productList {
+  flex-basis: calc((100% - 20px) / 2);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background-color: var(--productList);
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease;
+}
+
+.productArticle {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding-bottom: 80px;
+}
+
+.productTitle {
+  color: var(--accentText);
+  font-size: 62px;
+  font-weight: 800;
+  letter-spacing: -0.93px;
+  line-height: 67px;
+  text-transform: capitalize;
+  text-align: center;
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 40px;
+}
+
+.productTitle:hover,
+.productTitle:active,
+.productTitle:focus {
+  color: var(--accentTextInvert);
+}
+
+.productListTitle {
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -0.54px;
+  line-height: 43.2px;
+  margin-bottom: 20px;
+}
+
+.aboutProductList {
+  color: var(--colorProduct);
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 0.285px;
+  line-height: 24px;
+  text-transform: uppercase;
+  margin-bottom: auto;
+}
+
+.buttonContainer {
+  width: 100%;
+  padding-left: 20px;
+  padding-bottom: 20px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  transform: translate(100%);
+  opacity: 0;
+}
+
+.productList:hover .buttonContainer {
+  transform: translate(0);
+  opacity: 1;
+}
+
+.errorPage {
+  text-align: center;
+  padding: 40px;
+}
+
+.errorPage h2 {
+  margin-bottom: 20px;
+}
+
+.errorPage button {
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.errorPage button:hover,
+.errorPage button:focus,
+.errorPage button:active {
+  background-color: #dee4ea;
+}
+
+@media screen and (max-width: 880px) {
+  .imgGradient {
+    display: none;
+  }
+
+  .columnWidth {
+    width: 100%;
+  }
+
+  .title {
+    padding-bottom: 60px;
+    margin-bottom: 20px;
+    font-size: 48px;
+    text-align: center;
+  }
+
+  .text {
+    max-width: 100%;
+    margin-bottom: 40px;
+  }
+
+  .description {
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 1px solid var(--colorProduct);
+  }
+
+  .descriptionRevert {
+    display: flex;
+    gap: 50px;
+    flex-direction: column-reverse;
+  }
+
+  .productionTitle {
+    font-size: 38px;
+    margin-bottom: 18px;
+  }
+
+  .aboutProduct {
+    border-bottom: none;
+  }
+
+  .productList {
+    flex-basis: 100%;
+  }
+
+  .buttonContainer {
+    width: 350px;
+  }
+}

@@ -1,0 +1,43 @@
+.authBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.authButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+}
+
+.authDropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: var(--productList);
+  border: 1px solid var(--primaryColor);
+  border-radius: 4px;
+  padding: 8px;
+  min-width: 140px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.dropdownItem {
+  padding: 6px 10px;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: var(--primaryColor);
+  text-decoration: none;
+}
+
+.dropdownItem:hover {
+  background-color: var(--colorProduct);
+}

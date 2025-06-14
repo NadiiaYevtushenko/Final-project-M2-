@@ -1,0 +1,96 @@
+import { useState } from 'react';
+import { Formik, Form } from 'formik';
+import * as Yup from 'yup';
+import style from './RegisterModal.module.css'; // ❗ Спільні стилі
+import FormField from '../RegisterForm/FormField';
+import SuccessModal from '../RegisterForm/SuccessModal';
+
+const validationSchema = Yup.object({
+  email: Yup.string().required('Email обовʼязковий').email('Невірний формат email'),
+  password: Yup.string().required('Пароль обовʼязковий'),
+});
+
+const initialValues = {
+  email: '',
+  password: '',
+};
+
+const LoginModal = ({ onClose }: { onClose: () => void }) => {
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (values: typeof initialValues, { resetForm }: any) => {
+    try {
+      const res = await fetch('http://localhost:5000/api/users/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(values),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Помилка входу');
+      }
+
+      localStorage.setItem('token', data.token);
+      setSubmitted(true);
+      resetForm();
+    } catch (err: any) {
+      setError(err.message);
+    }
+  };
+
+  if (submitted) {
+    return <SuccessModal onClose={onClose} />;
+  }
+
+  return (
+    <div className={style.modalOverlay}>
+      <div className={style.modal}>
+        <button onClick={onClose} className={style.closeBtn} aria-label="Закрити">
+          ×
+        </button>
+        <h2 className={style.sectionTitle}>Вхід</h2>
+
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSubmit}
+          validateOnMount
+        >
+          {({ errors, touched, isValid }) => (
+            <Form autoComplete="off">
+              <FormField
+                name="email"
+                id="email"
+                type="email"
+                placeholder="Email *"
+                confirmationMessage="Email виглядає коректно"
+                touched={touched.email}
+                error={errors.email}
+              />
+              <FormField
+                name="password"
+                id="password"
+                type="password"
+                placeholder="Пароль *"
+                confirmationMessage="Пароль введено"
+                touched={touched.password}
+                error={errors.password}
+              />
+
+              {error && <div className={style.error}>{error}</div>}
+
+              <button type="submit" className={style.submitBtn} disabled={!isValid}>
+                Увійти
+              </button>
+            </Form>
+          )}
+        </Formik>
+      </div>
+    </div>
+  );
+};
+
+export default LoginModal;

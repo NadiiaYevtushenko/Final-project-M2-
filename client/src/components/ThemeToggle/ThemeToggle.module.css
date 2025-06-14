@@ -1,0 +1,25 @@
+.toggleButton {
+  position: absolute;
+  top: 90px;
+  right: 20px;
+  padding: 10px;
+  border-radius: 15px;
+  border: none;
+  background: linear-gradient(
+    90deg,
+    var(--accentText) 0%,
+    var(--accentTextInvert) 100%
+  );
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.toggleButton:hover,
+.toggleButton:active,
+.toggleButton:focus {
+  cursor: pointer;
+  background: linear-gradient(
+    90deg,
+    var(--accentTextInvert) 0%,
+    var(--accentText) 100%
+  );
+}

@@ -1,0 +1,5 @@
+.containerWrapper {
+  margin: 0 auto !important;
+  max-width: 80rem;
+  flex: 1;
+}

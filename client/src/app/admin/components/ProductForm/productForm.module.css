@@ -1,0 +1,85 @@
+.form {
+  width: 100%;
+  margin: 10px auto;
+  padding: 20px;
+  border: 1px solid var(--colorProduct);
+  border-radius: 10px;
+}
+
+.label {
+  display: inline-block;
+  width: 200px;
+  margin-bottom: 10px;
+}
+
+.input {
+  padding: 4px;
+  border-radius: 10px;
+  width: 100%;
+}
+
+.button {
+  display: block;
+  padding: 8px;
+  border-radius: 10px;
+  width: 240px;
+  margin: auto;
+  margin-top: 10px;
+  cursor: pointer;
+}
+.buttonDell {
+  display: block;
+  padding: 8px;
+  border-radius: 10px;
+  width: 240px;
+  margin: auto;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.error {
+  color: rgb(224, 40, 79);
+  margin-bottom: 20px;
+  display: block;
+}
+.img {
+  display: block;
+  width: 100px;
+  height: auto;
+  object-fit: cover;
+}
+.inputContainer {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 20px;
+  margin-bottom: 20px;
+  resize: vertical;
+}
+
+.galeryInputContainer {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.galleryItem {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.blokContainer {
+  padding: 8px;
+  border: 1px solid var(--colorProduct);
+  border-radius: 10px;
+}
+
+.divider {
+  width: 100%;
+  height: 2px;
+  border-bottom: 1px solid var(--colorProduct);
+  margin-bottom: 16px;
+}

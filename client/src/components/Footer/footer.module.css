@@ -1,0 +1,174 @@
+.footer {
+  background-color: var(--productList);
+  padding: 20px;
+  border-top: 4px double var(--colorProduct);
+  position: relative;
+  z-index: 10;
+}
+
+.container {
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  max-width: 80rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.footerLogo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logoContainer {
+  margin-right: 20px;
+}
+
+.navLinks {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  line-height: 1.25rem;
+}
+
+.navLink {
+  position: relative;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--primaryColor);
+}
+
+.cartIcon {
+  margin-left: auto;
+}
+
+.spanLink {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  width: 100%;
+  transform: translateY(0.5rem);
+  background-color: var(--primaryColor);
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.navLink:hover .spanLink,
+.navLink:focus .spanLink,
+.navLink:active .spanLink {
+  opacity: 1;
+}
+
+.cubeBox {
+  margin-top: 40px;
+  min-width: 40px;
+  border-bottom: 4px solid var(--colorProduct);
+  stroke: green;
+  position: relative;
+}
+
+.cube {
+  position: absolute;
+  flex-shrink: 0;
+  top: -40px;
+  left: 0;
+  transition: transform 1s, top 1s, left 1s;
+  cursor: grab;
+}
+
+.cube.animate {
+  animation: cube-animation 8s ease-in-out forwards;
+}
+
+@keyframes cube-animation {
+  0% {
+    transform: translateY(0);
+  }
+
+  25% {
+    transform: translateY(-150px);
+  }
+
+  50% {
+    transform: translateY(-150px) translateX(-50vw);
+  }
+
+  62.5% {
+    transform: translateY(-100px) translateX(-50vw);
+  }
+
+  75% {
+    transform: translateY(-100px) translateX(0);
+  }
+
+  100% {
+    transform: translateY(0) translateX(0);
+  }
+}
+
+.navLinksMobile {
+  display: none;
+}
+
+@media screen and (max-width: 880px) {
+  .navLinks {
+    display: none;
+  }
+
+  .header {
+    padding: 1rem 1rem;
+  }
+
+  .ulLinksMobile {
+    display: none;
+  }
+
+  .navLinksMobile {
+    display: flex;
+    align-items: center;
+  }
+
+  .menuIcon {
+    cursor: pointer;
+    transition: transform 0.5s ease;
+  }
+
+  .rotateOpen {
+    transform: rotate(0deg);
+  }
+
+  .rotateClose {
+    transform: rotate(360deg);
+  }
+
+  .ulLinksMobile {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    bottom: 112px;
+    left: 0;
+    right: 0;
+    background-color: var(--productList);
+    transform: translateY(100%);
+    transition: transform 0.5s ease;
+  }
+
+  .menuOpenFooter {
+    transform: translateY(0);
+  }
+
+  .menuCloseFooter {
+    transform: translateY(100%);
+  }
+
+  .navLinksMobile li {
+    margin-bottom: 16px;
+  }
+
+  .navLinksMobile ul {
+    padding: 20px;
+    z-index: 100;
+  }
+}

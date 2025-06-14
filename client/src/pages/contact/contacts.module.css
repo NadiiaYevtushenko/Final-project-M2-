@@ -1,0 +1,99 @@
+.heroSection {
+  background-image: linear-gradient(90deg,
+      var(--bgColor),
+      var(--gradientLightContact),
+      var(--bgColor)),
+    url(../../assets/banner-13.webp);
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: cover;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.heroTitle {
+  font-size: 40px;
+  color: var(--accentText);
+  font-weight: 800;
+  letter-spacing: 0.285px;
+  line-height: 31px;
+  margin-bottom: 30px;
+}
+
+.heroText {
+  font-size: 35px;
+  font-weight: 800;
+  letter-spacing: -0.93px;
+  line-height: 67px;
+  text-transform: capitalize;
+  color: var(--primaryColor);
+  margin-bottom: 40px;
+}
+
+.heroCall {
+  font-size: 20px;
+  color: var(--primaryColor);
+  font-weight: 400;
+  letter-spacing: 0.285px;
+  line-height: 31px;
+}
+
+.img {
+  width: 100%;
+  height: auto;
+  mask-image: url('../../assets/mask-6.svg');
+  -webkit-mask-image: url('../../assets/mask-6.svg');
+  mask-size: cover;
+  -webkit-mask-size: cover;
+  mask-position: top left;
+  -webkit-mask-position: top left;
+  mask-repeat: space;
+  -webkit-mask-repeat: space;
+}
+
+.sectionContainer {
+  background: linear-gradient(90deg,
+      var(--bgColor),
+      var(--accentBgColor),
+      var(--bgColor));
+  padding: 20px;
+}
+
+.addressTitle {
+  padding: 1.66666667em 0;
+  color: var(--primaryColor);
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -0.69px;
+  line-height: 53px;
+}
+
+.addressContainer {
+  display: flex;
+}
+
+.addressText {
+  padding: 20px 0;
+  color: var(--primaryColor);
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.285px;
+  line-height: 22px;
+  font-style: normal;
+  min-width: 140px;
+}
+
+.addressLink {
+  padding: 20px;
+  color: var(--accentText);
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.285px;
+  line-height: 32px;
+  font-style: normal;
+}
+
+.contactSection {
+  padding: 15px;
+  text-align: start;
+}

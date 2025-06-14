@@ -1,0 +1,142 @@
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  background: white;
+  padding: 2rem;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 8px;
+  position: relative;
+  overflow-y: auto;
+  max-height: 90vh;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 1.5rem;
+  background: crimson;
+  color: white;
+  border: none;
+  border-radius: 100%;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 10px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}
+
+.submitBtn {
+  margin-top: 1rem;
+  padding: 12px;
+  width: 100%;
+  background-color: #d5b32b;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+}
+
+.submitBtn:hover {
+  background-color: #c19e2b;
+}
+
+.successModal {
+  margin-top: 20px;
+  padding: 1rem;
+  background-color: #d4edda;
+  color: #155724;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.error {
+  font-size: 0.875rem;
+  color: crimson;
+  margin-top: -8px;
+  margin-bottom: 8px;
+}
+
+.success {
+  font-size: 0.875rem;
+  color: green;
+  margin-top: -8px;
+  margin-bottom: 8px;
+}
+
+.visually-hidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  white-space: nowrap;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: black;
+  padding: 10px;
+}
+
+.input {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 10px;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #333;
+}
+
+
+.input.error {
+  border: 2px solid crimson;
+  background-color: #fff0f0;
+}
+
+.inputWrapper {
+  position: relative;
+}
+
+.input.valid {
+  border: 1px solid green;
+  background-color: #f0fff0;
+}
+
+/* Галочка справа */
+.input.valid::after {
+  content: '✔️';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1rem;
+  pointer-events: none;
+  color: green;
+}
