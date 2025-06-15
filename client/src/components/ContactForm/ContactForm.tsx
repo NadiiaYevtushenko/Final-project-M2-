@@ -13,7 +13,6 @@ const ContactForm = () => {
   const [formData, setFormData] = useState<ContactFormData>({
     name: '',
     email: '',
-    phone: '',
     message: '',
   });
 
@@ -59,18 +58,6 @@ const ContactForm = () => {
         className={style.input}
         placeholder="Email"
         value={formData.email}
-        onChange={handleChange}
-        required
-      />
-
-      <label htmlFor="phone" className="visually-hidden">Телефон</label>
-      <input
-        id="phone"
-        name="phone"
-        type="tel"
-        className={style.input}
-        placeholder="+380..."
-        value={formData.phone}
         onChange={handleChange}
         required
       />

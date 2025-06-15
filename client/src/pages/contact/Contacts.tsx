@@ -1,10 +1,10 @@
 import { useAppDispatch } from '../../app/useAppDispatch';
 import { useEffect } from 'react';
 
-import { resetStatus } from '../../app/contactSlice'; // тут можна замінити на useAppDispatch
+import { resetStatus } from '../../app/contactSlice'; 
 import ContactForm from '../../components/ContactForm/ContactForm';
 
-import img from '../../assets/banner-3.webp';
+import img from '@/assets/banner-3.webp';
 import style from './contacts.module.css';
 
 const Contact = () => {

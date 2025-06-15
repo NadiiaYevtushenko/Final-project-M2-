@@ -9,9 +9,6 @@ const validationSchema = Yup.object({
   firstName: Yup.string().required('Імʼя обовʼязкове').min(2).max(30),
   lastName: Yup.string().required('Прізвище обовʼязкове').min(2).max(30),
   email: Yup.string().required('Email обовʼязковий').email('Невірний формат email'),
-  phone: Yup.string()
-    .required('Телефон обовʼязковий')
-    .matches(/^\+380\d{9}$/, 'Формат +380XXXXXXXXX'),
   password: Yup.string().required('Пароль обовʼязковий').min(5),
   confirmPassword: Yup.string()
     .required('Підтвердження обовʼязкове')
@@ -22,7 +19,6 @@ const initialValues = {
   firstName: '',
   lastName: '',
   email: '',
-  phone: '',
   password: '',
   confirmPassword: '',
 };
@@ -34,6 +30,7 @@ const RegisterModal = ({ onClose }: { onClose: () => void }) => {
     try {
       const res = await fetch('http://localhost:5000/api/users/register', {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -99,16 +96,7 @@ const RegisterModal = ({ onClose }: { onClose: () => void }) => {
                 confirmationMessage="Email виглядає коректно"
                 touched={touched.email}
                 error={errors.email}
-              />
-              <FormField
-                name="phone"
-                id="phone"
-                type="text"
-                placeholder="Телефон +380..."
-                confirmationMessage="Телефон валідний"
-                touched={touched.phone}
-                error={errors.phone}
-              />
+              />              
               <FormField
                 name="password"
                 id="password"

@@ -1,0 +1,12 @@
+<%- include('../partials/header') %>
+  <h2>Product List</h2>
+  <ul>
+    <% products.forEach(product=> { %>
+      <li>
+        <a href="../products/index.ejs product.id %>"></a>
+        <%= product.name %>
+          </a>
+      </li>
+      <% }) %>
+  </ul>
+  <%- include('../partials/footer') %>
