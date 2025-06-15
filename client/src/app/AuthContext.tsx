@@ -1,42 +1,47 @@
-import React, { createContext, useContext, useState } from 'react';
-import type { ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 
-export interface AuthContextType {
-  token: string | null;
+type AuthContextType = {
+  isAuthenticated: boolean;
+  user: any;
   isAdmin: boolean;
-  login: (token: string, isAdmin: boolean) => void;
+  login: (userData: any) => void;
   logout: () => void;
-}
+};
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | null>(null);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
-  const [isAdmin, setIsAdmin] = useState<boolean>(() => localStorage.getItem('isAdmin') === 'true');
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+  const [user, setUser] = useState<any>(null);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
-  const login = (token: string, isAdminFlag: boolean) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('isAdmin', JSON.stringify(isAdminFlag));
-    setToken(token);
-    setIsAdmin(isAdminFlag);
+  useEffect(() => {
+    const storedUser = localStorage.getItem('user');
+
+    if (storedUser) {
+      const parsed = JSON.parse(storedUser);
+      setUser(parsed);
+      setIsAdmin(parsed.isAdmin || false);
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const login = (userData: any) => {
+    setUser(userData);
+    setIsAdmin(userData.isAdmin || false);
+    setIsAuthenticated(true);
+    localStorage.setItem('user', JSON.stringify(userData));
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('isAdmin');
-    setToken(null);
+    setUser(null);
     setIsAdmin(false);
-  };
-
-  const value: AuthContextType = {
-    token,
-    isAdmin,
-    login,
-    logout,
+    setIsAuthenticated(false);
+    localStorage.removeItem('user');
   };
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider value={{ isAuthenticated, user, isAdmin, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
@@ -44,8 +49,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
+  if (!context) throw new Error('useAuth must be used within an AuthProvider');
   return context;
 };

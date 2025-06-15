@@ -1,0 +1,18 @@
+extends ../layouts/base.pug
+
+block content
+  h2 Вхід
+
+  if message
+    p.error(style="color: red")= message
+
+  form(action="/users/auth/login" method="POST")
+    div
+      label(for="email") Email:
+      input(type="email" name="email" id="email" required)
+
+    div
+      label(for="password") Пароль:
+      input(type="password" name="password" id="password" required)
+
+    button(type="submit") Увійти

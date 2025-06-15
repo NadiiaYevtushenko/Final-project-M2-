@@ -7,10 +7,20 @@ import RegisterModal from '../../app/admin/components/RegisterForm/RegisterModal
 import LoginModal from '../../app/admin/components/LoginForm/LoginModal';
 
 const AuthMenu = () => {
-  const { token, isAdmin, logout } = useAuth();
+  const { isAuthenticated, isAdmin, logout } = useAuth();
   const [open, setOpen] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const handleLoginSuccess = () => {
+    setShowLoginModal(false);
+    setOpen(false);
+  };
+
+  const handleRegisterSuccess = () => {
+    setShowRegisterModal(false);
+    setOpen(false);
+  };
 
   return (
     <>
@@ -25,7 +35,7 @@ const AuthMenu = () => {
 
         {open && (
           <div className={style.authDropdown}>
-            {!token ? (
+            {!isAuthenticated ? (
               <>
                 <button
                   className={style.dropdownItem}
@@ -54,7 +64,7 @@ const AuthMenu = () => {
                     className={style.dropdownItem}
                     onClick={() => setOpen(false)}
                   >
-                    Адмінка
+                    Адмінка (на розробці)
                   </Link>
                 )}
                 <Link
@@ -80,11 +90,17 @@ const AuthMenu = () => {
       </div>
 
       {showRegisterModal && (
-        <RegisterModal onClose={() => setShowRegisterModal(false)} />
+        <RegisterModal
+          onClose={() => setShowRegisterModal(false)}
+          onSuccess={handleRegisterSuccess}
+        />
       )}
 
       {showLoginModal && (
-        <LoginModal onClose={() => setShowLoginModal(false)} />
+        <LoginModal
+          onClose={() => setShowLoginModal(false)}
+          onSuccess={handleLoginSuccess}
+        />
       )}
     </>
   );

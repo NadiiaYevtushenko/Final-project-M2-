@@ -217,3 +217,11 @@
 .searchInput:focus {
   border-color: var(--accentText);
 }
+
+.greetingText {
+  margin-right: 1rem;
+  font-weight: 500;
+  font-size: 1rem;
+  color: #f0f0f0;
+  white-space: nowrap;
+}

@@ -21,7 +21,7 @@ const LoginModal = ({ onClose }: { onClose: () => void }) => {
 
   const handleSubmit = async (values: typeof initialValues, { resetForm }: any) => {
     try {
-      const res = await fetch('http://localhost:5000/api/users/login', {
+      const res = await fetch('http://localhost:5000/users/api/login', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },

@@ -1,0 +1,10 @@
+extends ../layouts/base.pug
+
+block content
+  h2 Захищена сторінка
+
+  p Ласкаво просимо, #{user.firstName}!
+  p Ваш email: #{user.email}
+
+  form(action="/users/auth/logout" method="POST")
+    button(type="submit") Вийти

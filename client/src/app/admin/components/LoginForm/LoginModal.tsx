@@ -1,13 +1,16 @@
 import { useState } from 'react';
 import { Formik, Form } from 'formik';
+import type { FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import style from './loginForm.module.css';
 import FormField from '../RegisterForm/FormField';
 import { useAuth } from '../../../AuthContext';
+import ForgotPasswordModal from '../PasswordRecovery/ForgotPasswordModal';
+
 
 const validationSchema = Yup.object({
-  email: Yup.string().email("Невалідна пошта").required("Email обов’язковий"),
-  password: Yup.string().required("Пароль обов’язковий"),
+  email: Yup.string().email('Невалідна пошта').required('Email обов’язковий'),
+  password: Yup.string().required('Пароль обов’язковий'),
 });
 
 const initialValues = {
@@ -15,17 +18,30 @@ const initialValues = {
   password: '',
 };
 
-const LoginModal = ({ onClose }: { onClose: () => void }) => {
+type Props = {
+  onClose: () => void;
+  onSuccess: () => void;
+};
+
+const LoginModal = ({ onClose, onSuccess }: Props) => {
   const { login } = useAuth();
   const [error, setError] = useState('');
+  const [showForgotModal, setShowForgotModal] = useState(false);
 
-  const handleSubmit = async (values: typeof initialValues, { resetForm }: any) => {
+  const handleSubmit = async (values: typeof initialValues, { resetForm }: FormikHelpers<typeof initialValues>) => {
     try {
-      const res = await fetch('http://localhost:5000/api/users/login', {
+      const res = await fetch('http://localhost:5000/users/api/login', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values),
       });
+
+      const contentType = res.headers.get('content-type');
+      if (!contentType?.includes('application/json')) {
+        const raw = await res.text();
+        throw new Error('Невірна відповідь від сервера: ' + raw.slice(0, 100));
+      }
 
       const data = await res.json();
 
@@ -33,9 +49,10 @@ const LoginModal = ({ onClose }: { onClose: () => void }) => {
         throw new Error(data.message || 'Помилка авторизації');
       }
 
-      login(data.token, data.user.isAdmin);
+      login(data.user);  
       resetForm();
       onClose();
+      onSuccess();  
     } catch (err: any) {
       setError(err.message);
     }
@@ -44,7 +61,9 @@ const LoginModal = ({ onClose }: { onClose: () => void }) => {
   return (
     <div className={style.modalOverlay}>
       <div className={style.modal}>
-        <button onClick={onClose} className={style.closeBtn} aria-label="Закрити">×</button>
+        <button onClick={onClose} className={style.closeBtn} aria-label="Закрити">
+          ×
+        </button>
         <h2 className={style.sectionTitle}>Вхід</h2>
 
         <Formik
@@ -75,12 +94,26 @@ const LoginModal = ({ onClose }: { onClose: () => void }) => {
 
               {error && <div className={style.error}>{error}</div>}
 
+              <p className={style.forgotPassword}>
+                <button
+                  type="button"
+                  onClick={() => setShowForgotModal(true)}
+                  className={style.forgotBtn}
+                >
+                  Забули пароль?
+                </button>
+              </p>
+
               <button type="submit" className={style.submitBtn}>
                 Увійти
               </button>
             </Form>
           )}
         </Formik>
+
+        {showForgotModal && (
+          <ForgotPasswordModal onClose={() => setShowForgotModal(false)} />
+        )}
       </div>
     </div>
   );

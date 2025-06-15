@@ -114,3 +114,23 @@
   margin-top: 10px;
   text-align: center;
 }
+
+.forgotPassword {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.forgotPassword button {
+  background: none;
+  border: none;
+  color: #0066cc;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 0.95rem;
+  padding: 0;
+  font-family: inherit;
+}
+
+.forgotPassword button:hover {
+  color: #004999;
+}

@@ -2,79 +2,110 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
 const dotenv = require('dotenv');
-
-// 🔹 Шаблонізатори
 const pug = require('pug');
 const ejs = require('ejs');
 
-// 🔹 Middleware
-const logRequests = require('../server/src/middleware/logRequestsMiddleware');
+const logRequests = require('./src/middleware/logRequestsMiddleware');
+const userRoutes = require('./src/routes/userRoutes');
+const productRoutes = require('./src/routes/productRoutes');
+const themeRoutes = require('./src/routes/themeRoutes');
+const { dummyUsers } = require('./src/controllers/userController');
+const bcrypt = require('bcryptjs');
 
-// 🔹 Маршрути
-const userRoutes = require('../server/src/routes/userRoutes');
-const productRoutes = require('../server/src/routes/productRoutes');  
-
-// 🔹 Завантаження змінних середовища
 dotenv.config();
-
-// 🔹 Ініціалізація додатку
 const app = express();
 const PORT = process.env.PORT || 5000;
+const isProd = process.env.NODE_ENV === 'production';
 
 //
 // ==============================
 // 🔹 View Engines
 // ==============================
 app.set('views', path.join(__dirname, 'src/controllers/views'));
-
-// PUG для /users
 app.engine('pug', pug.__express);
-
-// EJS для /products
 app.engine('ejs', ejs.__express);
+app.set('view engine', 'pug'); // Default — pug
 
-// ❗ Без app.set('view engine') — бо у нас дві системи шаблонів
 //
 // ==============================
-// 🔹 Глобальні middleware
+// 🔹 Middleware
 // ==============================
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 app.use(cors({
   origin: 'http://localhost:3000',
-  credentials: true
+  credentials: true,
 }));
 
 app.use(logRequests);
 
-//
-// ==============================
-// 🔹 Статичні файли
-// ==============================
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+  name: 'sid',
+  secret: process.env.SESSION_SECRET || 'passport-secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: isProd,               // HTTPS only in production
+    sameSite: 'lax',
+    maxAge: 1000 * 60 * 60 * 2,   // 2 hours
+  }
+}));
 
-app.get('/favicon.ico', (req, res) => {
-  res.sendFile(path.join(__dirname, '../server/public/favicon.ico'));
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use((req, res, next) => {
+  res.locals.theme = req.cookies.theme || 'light';
+  res.locals.year = new Date().getFullYear();
+  next();
 });
 
+//
+// ==============================
+// 🔒 Passport конфігурація
+// ==============================
+passport.use(new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
+  const user = dummyUsers.find(u => u.email === email);
+  if (!user) return done(null, false, { message: 'Користувача не знайдено' });
+  if (!bcrypt.compareSync(password, user.passwordHash)) return done(null, false, { message: 'Невірний пароль' });
+  return done(null, user);
+}));
+
+passport.serializeUser((user, done) => done(null, user.id));
+passport.deserializeUser((id, done) => {
+  const user = dummyUsers.find(u => u.id === Number(id));
+  if (!user) return done(null, false);
+  done(null, user);
+});
 
 //
 // ==============================
-// 🔹 API маршрути
+// 🔹 Static & Theme
 // ==============================
-app.use('/api/users', userRoutes);
-app.use('/api/products', productRoutes); // якщо продукт-роути є
+app.use(express.static(path.join(__dirname, 'public')));
+app.get('/favicon.ico', (req, res) =>
+  res.sendFile(path.join(__dirname, 'public', 'favicon.ico'))
+);
+app.use('/', themeRoutes);
 
 //
-// SSR-маршрути (EJS-представлення)
-app.use('/products', productRoutes);
-
-// SSR-маршрути (PUG-представлення)
-app.use('/users', userRoutes);
 // ==============================
-// 🔹 Запуск сервера
+// 🔹 Routes
+// ==============================
+app.use('/api/products', productRoutes);
+app.use('/products', productRoutes); // SSR
+app.use('/users', userRoutes);       // SSR + API (/users/api/*)
+
+//
+// ==============================
+// 🔹 Start
 // ==============================
 app.listen(PORT, () => {
   console.log(`✅ Server started at http://localhost:${PORT}`);

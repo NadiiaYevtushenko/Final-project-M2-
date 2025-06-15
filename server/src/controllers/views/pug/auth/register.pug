@@ -1,0 +1,30 @@
+extends ../layouts/base
+
+block content
+  h2 Реєстрація
+
+  if message
+    p.error(style="color: red")= message
+
+  form(action="/users/auth/register" method="POST")
+    div
+      label(for="firstName") Ім'я:
+      input(type="text" name="firstName" id="firstName" required)
+
+    div
+      label(for="lastName") Прізвище:
+      input(type="text" name="lastName" id="lastName" required)
+
+    div
+      label(for="email") Email:
+      input(type="email" name="email" id="email" required)
+
+    div
+      label(for="password") Пароль:
+      input(type="password" name="password" id="password" required)
+
+    div
+      label(for="confirmPassword") Підтвердіть пароль:
+      input(type="password" name="confirmPassword" id="confirmPassword" required)
+
+    button(type="submit") Зареєструватися

@@ -3,6 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <title>
     <%= title || 'Product Page' %>
@@ -10,8 +11,10 @@
   <link rel="stylesheet" href="../style.css">
 </head>
 
-<body>
+<body data-theme="<%= theme %>">
   <header>
     <h1>MY SHOP</h1>
+    <button id="toggle-theme">Toggle Theme</button>
     <hr>
+    <script src="/scripts/theme.js"></script>
   </header>

@@ -2,14 +2,19 @@ doctype html
 html
   head
     meta(charset='UTF-8')
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
     link(rel='icon', href='/favicon.ico', type='image/x-icon')
     title= title
     link(rel='stylesheet', href='/style.css')
-  body
+  body(data-theme=theme)
     header
       h1 MY SHOP
+      button#toggle-theme Toggle Theme
+      
       hr
     block content
     footer
       hr
-      p &copy; 2025 My App
+      p &copy; #{year} My Shop
+
+    script(src='/scripts/theme.js')

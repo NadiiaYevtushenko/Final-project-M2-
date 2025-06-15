@@ -1,0 +1,131 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  position: relative;
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+.closeBtn {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background-color: #c6002b;
+  color: #fff;
+  border: none;
+  font-size: 1.2rem;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  border-radius: 50%;
+  font-weight: bold;
+}
+
+.sectionTitle {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  color: #000;
+}
+
+.input {
+  width: 100%;
+  padding: 0.7rem;
+  border-radius: 5px;
+  border: 2px solid #ccc;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  background-color: #fefefe;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  border-color: #8e8001;
+  outline: none;
+}
+
+.input:valid {
+  background-color: #e7ffe7;
+  border-color: green;
+}
+
+.input:invalid {
+  border-color: red;
+}
+
+.submitBtn {
+  width: 100%;
+  padding: 0.8rem;
+  background-color: #111;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.submitBtn:hover {
+  background-color: #333;
+}
+
+.error {
+  color: #c6002b;
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.confirmMessage {
+  color: green;
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+}
+
+.forgotPassword {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.forgotPassword button {
+  background: none;
+  border: none;
+  color: #0066cc;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 0.95rem;
+  padding: 0;
+}
+
+.forgotPassword button:hover {
+  color: #004999;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

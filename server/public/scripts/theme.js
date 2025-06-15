@@ -3,10 +3,10 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!button) return;
 
   button.addEventListener("click", async () => {
-    const current = document.body.dataset.theme || "light";
+    const current = document.body.getAttribute("data-theme") || "light";
     const next = current === "dark" ? "light" : "dark";
 
-    await fetch("/theme", {
+    await fetch("/set-theme", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

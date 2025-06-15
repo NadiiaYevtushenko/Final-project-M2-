@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Formik, Form } from 'formik';
+import type { FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import style from './RegisterModal.module.css';
 import FormField from '../RegisterForm/FormField';
 import SuccessModal from './SuccessModal';
+import { useAuth } from '../../../../app/AuthContext';
 
 const validationSchema = Yup.object({
   firstName: Yup.string().required('Імʼя обовʼязкове').min(2).max(30),
@@ -23,28 +25,61 @@ const initialValues = {
   confirmPassword: '',
 };
 
-const RegisterModal = ({ onClose }: { onClose: () => void }) => {
-  const [submitted, setSubmitted] = useState(false);
+type Props = {
+  onClose: () => void;
+  onSuccess: () => void;
+};
 
-  const handleSubmit = async (values: typeof initialValues, { resetForm }: any) => {
+const RegisterModal = ({ onClose, onSuccess }: Props) => {
+  const [submitted, setSubmitted] = useState(false);
+  const { login } = useAuth();
+
+  const handleSubmit = async (
+    values: typeof initialValues,
+    { resetForm }: FormikHelpers<typeof initialValues>
+  ) => {
     try {
-      const res = await fetch('http://localhost:5000/api/users/register', {
+      const registerRes = await fetch('http://localhost:5000/users/api/register', {
         method: 'POST',
         credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values),
       });
 
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message || 'Помилка під час реєстрації');
+      const contentType = registerRes.headers.get('Content-Type') || '';
+      if (!contentType.includes('application/json')) {
+        throw new Error('Сервер повернув не JSON');
       }
 
-      console.log('✔️ Успішна реєстрація');
-      setSubmitted(true);
+      const registerData = await registerRes.json();
+      if (!registerRes.ok) {
+        throw new Error(registerData.message || 'Помилка під час реєстрації');
+      }
+
+      const loginRes = await fetch('http://localhost:5000/users/api/login', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: values.email,
+          password: values.password,
+        }),
+      });
+
+      const loginContentType = loginRes.headers.get('Content-Type') || '';
+      if (!loginContentType.includes('application/json')) {
+        throw new Error('Сервер повернув не JSON під час входу');
+      }
+
+      const loginData = await loginRes.json();
+      if (!loginRes.ok) {
+        throw new Error(loginData.message || 'Реєстрація пройшла, але вхід не вдався');
+      }
+
+      login(loginData.user);
+      onSuccess();
       resetForm();
+      setSubmitted(true);
     } catch (err: any) {
       alert(err.message);
     }
@@ -57,9 +92,7 @@ const RegisterModal = ({ onClose }: { onClose: () => void }) => {
   return (
     <div className={style.modalOverlay}>
       <div className={style.modal}>
-        <button onClick={onClose} className={style.closeBtn} aria-label="Закрити">
-          ×
-        </button>
+        <button onClick={onClose} className={style.closeBtn} aria-label="Закрити">×</button>
         <h2 className={style.sectionTitle}>Реєстрація</h2>
 
         <Formik
@@ -96,7 +129,7 @@ const RegisterModal = ({ onClose }: { onClose: () => void }) => {
                 confirmationMessage="Email виглядає коректно"
                 touched={touched.email}
                 error={errors.email}
-              />              
+              />
               <FormField
                 name="password"
                 id="password"
@@ -116,7 +149,11 @@ const RegisterModal = ({ onClose }: { onClose: () => void }) => {
                 error={errors.confirmPassword}
               />
 
-              <button type="submit" className={style.submitBtn} disabled={!isValid}>
+              <button
+                type="submit"
+                className={style.submitBtn}
+                disabled={!isValid}
+              >
                 Зареєструватися
               </button>
             </Form>

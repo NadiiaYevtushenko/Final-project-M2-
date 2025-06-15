@@ -9,10 +9,12 @@ import Logo from '../../components/Logo/Logo';
 import AuthMenu from '../../components/AuthMenu/AuthMenu';
 import store from '../../app/store';
 import style from './header.module.css';
+import { useAuth } from '../../app/AuthContext'; // ⬅️ додаємо
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const { isAuthenticated, user } = useAuth(); // ⬅️ читаємо firstName
 
   const toggleMenu = () => setMenuOpen((prev) => !prev);
 
@@ -41,7 +43,6 @@ const Header = () => {
                 </li>
               ))}
             </ul>
-
           </div>
 
           {/* Пошук */}
@@ -55,8 +56,11 @@ const Header = () => {
             />
           </div>
 
-          {/* Кошик + Auth */}
+          {/* Вітання + Кошик + Auth */}
           <div className={style.headerRight}>
+            {isAuthenticated && user?.firstName && (
+              <div className={style.greetingText}>👋 Вітаю, {user.firstName}!</div>
+            )}
             <CartMenu />
             <AuthMenu />
           </div>
@@ -84,7 +88,6 @@ const Header = () => {
                     </Link>
                   </li>
                 ))}
-                
               </ul>
             )}
           </div>
