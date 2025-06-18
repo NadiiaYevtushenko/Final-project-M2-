@@ -1,5 +1,5 @@
-const express = require('express');
-const { protect: auth } = require('../middleware/authMiddleware.js');
+const express = require('express'); 
+const { protect, jwtProtect } = require('../middleware/authMiddleware');
 const adminOnly = require('../middleware/adminMiddleware.js');
 
 const {
@@ -15,16 +15,20 @@ const {
 const router = express.Router();
 
 //
-// 🔹 SSR (EJS Pages)
-router.get('/', renderAllProducts);            // /products/
-router.get('/:id', renderProductById);    // /products/view/1
+// 🔹 API (JSON)
+// !!! Важливо — оголосити спочатку, щоб уникнути конфлікту з /:id
+//
+router.get('/api', getAllProducts);
+router.get('/api/:productId', getProductById);
+router.post('/api', jwtProtect, adminOnly, createProduct);
+router.put('/api/:productId', jwtProtect, adminOnly, updateProduct);
+router.delete('/api/:productId', jwtProtect, adminOnly, deleteProduct);
 
 //
-// 🔹 API (JSON)
-router.get('/api', getAllProducts);                         // /products/api
-router.get('/api/:productId', getProductById);              // /products/api/2
-router.post('/api', auth, adminOnly, createProduct);
-router.put('/api/:productId', auth, adminOnly, updateProduct);
-router.delete('/api/:productId', auth, adminOnly, deleteProduct);
+// 🔹 SSR (EJS Pages)
+// Після API
+//
+router.get('/', renderAllProducts);
+router.get('/:id', renderProductById);
 
 module.exports = router;

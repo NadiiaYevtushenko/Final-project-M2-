@@ -1,6 +1,9 @@
 const bcrypt = require('bcryptjs');
 const nodemailer = require('nodemailer');
 const { generateToken } = require('../config/jwtUtils');
+const { generateNextUserId } = require('../utils/idGenerator'); 
+require('dotenv').config();
+
 
 // 🔹 Тимчасова база користувачів
 const dummyUsers = [
@@ -46,7 +49,7 @@ const createUser = (req, res) => {
 
   const passwordHash = bcrypt.hashSync(password, 10);
   const newUser = {
-    id: ++userIdCounter,
+    id: generateNextUserId(dummyUsers),
     firstName,
     lastName,
     email,
@@ -82,7 +85,7 @@ const loginUser = (req, res) => {
     httpOnly: true,
     maxAge: 60 * 60 * 1000,
     sameSite: 'Lax',
-    secure: false,
+    secure: process.env.NODE_ENV === 'production',
   });
 
   res.status(200).json({
@@ -108,16 +111,16 @@ const forgotPassword = async (req, res) => {
   user.passwordHash = bcrypt.hashSync(newPassword, 10);
 
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    service: process.env.EMAIL_SERVICE,
     auth: {
-      user: 'your_email@gmail.com',
-      pass: 'your_app_password', // обов’язково увімкнути app-password
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
     },
   });
 
   try {
     await transporter.sendMail({
-      from: 'your_email@gmail.com',
+      from: process.env.EMAIL_USER,
       to: email,
       subject: 'Ваш новий пароль',
       text: `Ваш новий тимчасовий пароль: ${newPassword}`,

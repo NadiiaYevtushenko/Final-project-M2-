@@ -8,7 +8,10 @@ const LocalStrategy = require('passport-local').Strategy;
 const dotenv = require('dotenv');
 const pug = require('pug');
 const ejs = require('ejs');
+const emailRoutes = require('./src/routes/emailRoutes');
 
+const errorHandler = require('./src/middleware/errorHandlerMiddleware');
+const validateUserInput = require('./src/middleware/validationUserInput');
 const logRequests = require('./src/middleware/logRequestsMiddleware');
 const userRoutes = require('./src/routes/userRoutes');
 const productRoutes = require('./src/routes/productRoutes');
@@ -66,7 +69,7 @@ app.use((req, res, next) => {
   res.locals.year = new Date().getFullYear();
   next();
 });
-
+app.use(errorHandler);
 //
 // ==============================
 // 🔒 Passport конфігурація
@@ -102,6 +105,7 @@ app.use('/', themeRoutes);
 app.use('/api/products', productRoutes);
 app.use('/products', productRoutes); // SSR
 app.use('/users', userRoutes);       // SSR + API (/users/api/*)
+app.use('/email', emailRoutes);
 
 //
 // ==============================

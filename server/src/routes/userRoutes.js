@@ -12,7 +12,8 @@ const {
   forgotPassword,
   logoutUser,
 } = require('../controllers/userController');
-const { protect } = require('../middleware/authMiddleware');
+const { protect, jwtProtect } = require('../middleware/authMiddleware');
+const { generateNextUserId } = require('../utils/idGenerator');
 
 const router = express.Router();
 
@@ -45,7 +46,7 @@ router.post('/auth/register', (req, res) => {
   }
 
   dummyUsers.push({
-    id: dummyUsers.length + 1,
+    id: generateNextUserId(dummyUsers),
     firstName,
     lastName,
     email,
@@ -106,9 +107,10 @@ router.post('/api/login', (req, res, next) => {
   })(req, res, next);
 });
 
-router.get('/api/profile', protect, getProfile);
-router.put('/api/profile', protect, updateProfile);
+// ✅ Protected API routes using jwtProtect
+router.get('/api/profile', jwtProtect, getProfile);
+router.put('/api/profile', jwtProtect, updateProfile);
 router.post('/api/forgot-password', forgotPassword);
-router.post('/api/logout', logoutUser);
+router.post('/api/logout', jwtProtect, logoutUser);
 
 module.exports = router;
