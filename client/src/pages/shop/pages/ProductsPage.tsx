@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router'; // ✅ виправлено
+import { useParams } from 'react-router'; // 
 import ProductCard from '../components/ProductCard';
 import './ProductsPage.css';
 import type { Product } from '../../../api/productsApi';
