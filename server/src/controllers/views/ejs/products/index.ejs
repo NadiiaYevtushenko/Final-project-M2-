@@ -1,11 +1,16 @@
 <%- include('../partials/header') %>
-  <h2>Product List</h2>
+  <h2>Products from MongoDB</h2>
   <ul>
     <% products.forEach(product=> { %>
       <li>
-        <a href="../products/index.ejs product.id %>"></a>
-        <%= product.name %>
-          </a>
+        Категорія:
+        <a href="/products/category/<%= product.categorySlug %>">
+          <%= product.category || 'Без категорії' %>
+        </a>
+        Назва:
+        <a href="/products/<%= product.categorySlug %>/<%= product.slug %>">
+          <%= product.name %>
+        </a> <!-- ✅ -->
       </li>
       <% }) %>
   </ul>

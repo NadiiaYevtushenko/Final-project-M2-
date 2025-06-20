@@ -1,34 +1,47 @@
-const express = require('express'); 
-const { protect, jwtProtect } = require('../middleware/authMiddleware');
-const adminOnly = require('../middleware/adminMiddleware.js');
+const express = require('express');
+const { jwtProtect } = require('../middleware/authMiddleware');
+const adminOnly = require('../middleware/adminMiddleware');
 
 const {
-  renderAllProducts,
-  renderProductById,
+  // 🔹 API Controllers
   getAllProducts,
+  getProductsByCategory,
   getProductById,
+  getCategoryList,
   createProduct,
   updateProduct,
   deleteProduct,
-} = require('../controllers/productController.js');
+
+  // 🔹 SSR Controllers
+  renderAllProducts,
+  renderAllProductsFromDB,
+  renderProductsByCategory,
+  renderCategoryList,
+  renderProductBySlug,
+} = require('../controllers/productController');
 
 const router = express.Router();
 
-//
-// 🔹 API (JSON)
-// !!! Важливо — оголосити спочатку, щоб уникнути конфлікту з /:id
-//
+// ==========================================
+// 🔹 REST API ROUTES (/api/products/*)
+// ==========================================
+
 router.get('/api', getAllProducts);
+router.get('/api/categories', getCategoryList);
+router.get('/api/category/:slug', getProductsByCategory);
 router.get('/api/:productId', getProductById);
 router.post('/api', jwtProtect, adminOnly, createProduct);
-router.put('/api/:productId', jwtProtect, adminOnly, updateProduct);
-router.delete('/api/:productId', jwtProtect, adminOnly, deleteProduct);
+// router.put('/api/:productId', jwtProtect, adminOnly, updateProduct);
+// router.delete('/api/:productId', jwtProtect, adminOnly, deleteProduct);
 
-//
-// 🔹 SSR (EJS Pages)
-// Після API
-//
+// ==========================================
+// 🔹 SSR ROUTES (/products/*)
+// ==========================================
+
+router.get('/db', renderAllProductsFromDB);
+router.get('/categories', renderCategoryList);
+router.get('/category/:slug', renderProductsByCategory);
+router.get('/:categorySlug/:productSlug', renderProductBySlug);  // 🛠 fixed route
 router.get('/', renderAllProducts);
-router.get('/:id', renderProductById);
 
 module.exports = router;

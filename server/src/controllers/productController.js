@@ -1,88 +1,186 @@
-// 🔹 Dummy дані товарів
-const products = [
-  { id: 1, name: '3D Printer FDM', price: '500 USD', description: 'Basic FDM printer' },
-  { id: 2, name: 'Resin SLA Printer', price: '800 USD', description: 'High-res resin printer' },
-];
+const Product = require('../models/Product');
+const slugify = require('../utils/slugify');
 
-// http://localhost:5000/products             // SSR сторінка
-//http://localhost:5000/products/1      // SSR один товар
+// ========== 🔹 SSR ==========
 
-//http://localhost:5000/products/api         // JSON API
-//http://localhost:5000/products/api/1       // JSON API один товар
-
-// ===================================
-// 🔹 SSR (EJS) Маршрути
-// ===================================
-
-// 🔍 GET /products — рендер усіх товарів
-const renderAllProducts = (req, res) => {
-  res.render('ejs/products/index.ejs', { title: 'Products', products });
+const renderAllProducts = async (req, res, next) => {
+  try {
+    const products = await Product.find().lean();
+    res.render('ejs/products/index.ejs', { title: 'Products', products });
+  } catch (err) {
+    next(err);
+  }
 };
 
-// 🔍 GET /products/:id — рендер одного товару
-const renderProductById = (req, res) => {
-  const product = products.find(p => p.id === parseInt(req.params.id));
-  if (!product) return res.status(404).send('Product not found');
-  res.render('ejs/products/show.ejs', {
-    title: product.name,
-    product,
-  });
+const renderCategoryList = async (req, res, next) => {
+  try {
+    const categories = await Product.aggregate([
+      { $group: { _id: '$categorySlug', category: { $first: '$category' } } }
+    ]);
+
+    res.render('ejs/products/categories.ejs', {
+      title: 'Категорії товарів',
+      categories,
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
-// ===================================
-// 🔹 API (JSON) Маршрути
-// ===================================
+const renderProductsByCategory = async (req, res, next) => {
+  const categorySlug = decodeURIComponent(req.params.slug || '').trim();
+  if (!categorySlug) return res.status(400).send('❌ Категорія не вказана');
 
-const getAllProducts = (req, res) => {
-  res.json(products);
+  try {
+    const products = await Product.find({ categorySlug }).lean();
+    if (!products.length)
+      return res.status(404).send('Категорія не знайдена');
+
+    res.render('ejs/products/category.ejs', {
+      title: `Категорія: ${products[0].category}`,
+      category: products[0].category,
+      products,
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
-const getProductById = (req, res) => {
-  const product = products.find(p => p.id === parseInt(req.params.productId));
-  if (!product) return res.status(404).json({ message: 'Product not found' });
-  res.json(product);
+const renderProductBySlug = async (req, res, next) => {
+  const { categorySlug, productSlug } = req.params;
+
+  try {
+    const product = await Product.findOne({ categorySlug, slug: productSlug }).lean();
+    if (!product) return res.status(404).send('Product not found');
+
+    res.render('ejs/products/show.ejs', {
+      title: product.name,
+      product,
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
-const createProduct = (req, res) => {
-  const { name, price, description } = req.body;
-  const newProduct = {
-    id: products.length + 1,
-    name,
-    price,
-    description,
-  };
-  products.push(newProduct);
-  res.status(201).json(newProduct);
+const renderAllProductsFromDB = async (req, res) => {
+  try {
+    const products = await Product.find().lean();
+    res.render('ejs/products/index.ejs', {
+      title: 'Products from MongoDB',
+      products,
+    });
+  } catch (err) {
+    res.status(500).send('Помилка при отриманні товарів з БД');
+  }
 };
 
-const updateProduct = (req, res) => {
-  const { name, price, description } = req.body;
-  const product = products.find(p => p.id === parseInt(req.params.productId));
-  if (!product) return res.status(404).json({ message: 'Product not found' });
+// ========== 🔹 API ==========
 
-  product.name = name || product.name;
-  product.price = price || product.price;
-  product.description = description || product.description;
-
-  res.json(product);
+const getAllProducts = async (req, res, next) => {
+  try {
+    const products = await Product.find();
+    res.json(products);
+  } catch (err) {
+    next(err);
+  }
 };
 
-const deleteProduct = (req, res) => {
-  const index = products.findIndex(p => p.id === parseInt(req.params.productId));
-  if (index === -1) return res.status(404).json({ message: 'Product not found' });
-
-  const deleted = products.splice(index, 1);
-  res.json({ message: 'Product deleted', product: deleted[0] });
+const getProductById = async (req, res, next) => {
+  try {
+    const product = await Product.findById(req.params.productId);
+    if (!product) return res.status(404).json({ message: 'Product not found' });
+    res.json(product);
+  } catch (err) {
+    next(err);
+  }
 };
 
-// ===================================
-// 🔹 Експорт
-// ===================================
+const getProductsByCategory = async (req, res) => {
+  try {
+    const categorySlug = decodeURIComponent(req.params.slug || '').trim();
+    if (!categorySlug) return res.status(400).json({ message: 'Missing category slug' });
+
+    const products = await Product.find({ categorySlug }).lean();
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ message: 'Error fetching products', error: err.message });
+  }
+};
+
+const getCategoryList = async (req, res) => {
+  const categories = await Product.aggregate([
+    { $group: { _id: '$categorySlug', category: { $first: '$category' } } },
+    { $project: { _id: 0, slug: '$_id', name: '$category' } }
+  ]);
+  res.json(categories);
+};
+
+const createProduct = async (req, res, next) => {
+  try {
+    const { name, price, description, imageUrl, category, currency } = req.body;
+
+    const newProduct = new Product({
+      name,
+      price,
+      description,
+      imageUrl,
+      category,
+      currency,
+      slug: slugify(name),
+      categorySlug: slugify(category),
+    });
+
+    const savedProduct = await newProduct.save();
+    res.status(201).json(savedProduct);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const updateProduct = async (req, res, next) => {
+  try {
+    const { name, price, description, imageUrl, category, currency } = req.body;
+    const product = await Product.findById(req.params.productId);
+    if (!product) return res.status(404).json({ message: 'Product not found' });
+
+    product.name = name ?? product.name;
+    product.price = price ?? product.price;
+    product.description = description ?? product.description;
+    product.imageUrl = imageUrl ?? product.imageUrl;
+    product.category = category ?? product.category;
+    product.currency = currency ?? product.currency;
+
+    if (name) product.slug = slugify(name);
+    if (category) product.categorySlug = slugify(category);
+
+    const updated = await product.save();
+    res.json(updated);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const deleteProduct = async (req, res, next) => {
+  try {
+    const product = await Product.findByIdAndDelete(req.params.productId);
+    if (!product) return res.status(404).json({ message: 'Product not found' });
+    res.json({ message: 'Product deleted', product });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// ========== 🔹 Export ==========
 module.exports = {
   renderAllProducts,
-  renderProductById,
+  renderAllProductsFromDB,
+  renderProductsByCategory,
+  renderCategoryList,
+  renderProductBySlug,
   getAllProducts,
   getProductById,
+  getProductsByCategory,
+  getCategoryList,
   createProduct,
   updateProduct,
   deleteProduct,

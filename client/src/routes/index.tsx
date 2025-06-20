@@ -14,9 +14,10 @@ import '../app//styles/globals.css';
 import HomePage from '../pages/home/Home';
 import ErrorPage from '../app/error';
 import ContactPage from '../pages/contact/Contacts';
-import ShopPage from '../pages/shop/Shop';
+import ShopPage from '../pages/shop/pages/Shop';
 import ServicesPage from '../pages/services/Services';
-import ProductsPage from '../pages/shop/productPage/ProductsPage';
+// import ProductsPage from '../pages/shop/pages/ProductsPage';  
+
 import Profile from '../pages/profile/Profile'; 
 
 config.autoAddCss = false;
@@ -33,7 +34,8 @@ const App = () => {
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/services" element={<ServicesPage />} />
               <Route path="/shop" element={<ShopPage />} />
-              <Route path="/shop/:category" element={<ProductsPage />} />
+              {/* <Route path="/shop/category/:slug" element={<ProductsPage />} /> */}
+              {/* <Route path="/shop/:categorySlug/:productSlug" element={<ProductPage />} /> */}
               <Route path="*" element={<HomePage />} errorElement={<ErrorPage />} />
               <Route path="/profile" element={<Profile />} />
             </Routes>

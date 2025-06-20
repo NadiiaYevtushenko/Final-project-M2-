@@ -1,0 +1,13 @@
+<%- include('../partials/header') %>
+
+  <h2>Категорії товарів</h2>
+  <ul>
+    <% categories.forEach(cat=> { %>
+      <li>
+        <a href="/products/category/<%= cat._id %>">
+          <%= cat.category %>
+        </a>
+      </li>
+      <% }) %>
+  </ul>
+  <%- include('../partials/footer') %>
