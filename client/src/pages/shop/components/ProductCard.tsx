@@ -1,5 +1,6 @@
-import { Link } from 'react-router'; // ✅ Потрібно 'react-router-dom'
-import style from './ProductCard.module.css';
+import { Link } from 'react-router'; 
+import style from '../components/ProductCard.module.css';
+
 
 type ProductCardProps = {
   id: string;
@@ -10,8 +11,8 @@ type ProductCardProps = {
   oldPrice?: number;
   image: string;
   discountPercent?: number;
-  categorySlug: string; // ✅ додано
-  slug: string;         // ✅ додано
+  categorySlug: string;  
+  slug: string;    
 };
 
 const ProductCard = ({

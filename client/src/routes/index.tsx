@@ -16,7 +16,7 @@ import ErrorPage from '../app/error';
 import ContactPage from '../pages/contact/Contacts';
 import ShopPage from '../pages/shop/pages/Shop';
 import ServicesPage from '../pages/services/Services';
-// import ProductsPage from '../pages/shop/pages/ProductsPage';  
+import ProductsPage from '../pages/shop/pages/ProductsPage';  
 
 import Profile from '../pages/profile/Profile'; 
 
@@ -34,7 +34,7 @@ const App = () => {
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/services" element={<ServicesPage />} />
               <Route path="/shop" element={<ShopPage />} />
-              {/* <Route path="/shop/category/:slug" element={<ProductsPage />} /> */}
+              <Route path="/shop/:slug" element={<ProductsPage />} />
               {/* <Route path="/shop/:categorySlug/:productSlug" element={<ProductPage />} /> */}
               <Route path="*" element={<HomePage />} errorElement={<ErrorPage />} />
               <Route path="/profile" element={<Profile />} />

@@ -26,6 +26,6 @@ export const resolveCategoryInfo = (categoryName: string) => {
   return {
     title: categoryName,
     slug: categoryMap[categoryName]?.slug || categoryName.toLowerCase().replace(/\s+/g, '-'),
-    img: categoryMap[categoryName]?.img || '/assets/placeholder.jpg',
+    img: categoryMap[categoryName]?.img || '../../../assets/placeholder.jpg',
   };
 };

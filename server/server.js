@@ -15,23 +15,17 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const isProd = process.env.NODE_ENV === 'production';
 
-// ==============================
-// 🔹 Database
-// ==============================
+// ===== Database =====
 const connectDB = require('./src/config/db');
 connectDB();
 
-// ==============================
-// 🔹 View Engines
-// ==============================
+// ===== View Engines =====
 app.set('views', path.join(__dirname, 'src/controllers/views'));
 app.engine('pug', pug.__express);
 app.engine('ejs', ejs.__express);
 app.set('view engine', 'pug');
 
-// ==============================
-// 🔹 Middleware
-// ==============================
+// ===== Middleware =====
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -44,9 +38,7 @@ app.use(cors({
 const logRequests = require('./src/middleware/logRequestsMiddleware');
 app.use(logRequests);
 
-// ==============================
-// 🔒 Session & Passport
-// ==============================
+// ===== Session & Passport =====
 app.use(session({
   name: 'sid',
   secret: process.env.SESSION_SECRET || 'passport-secret',
@@ -79,49 +71,54 @@ passport.deserializeUser((id, done) => {
   done(null, user);
 });
 
-// ==============================
-// 🔹 Template Locals
-// ==============================
+// ===== Locals =====
 app.use((req, res, next) => {
   res.locals.theme = req.cookies.theme || 'light';
   res.locals.year = new Date().getFullYear();
   next();
 });
 
-// ==============================
-// 🔹 Static Files
-// ==============================
+// ===== Static =====
 app.use(express.static(path.join(__dirname, 'public')));
 app.get('/favicon.ico', (req, res) =>
   res.sendFile(path.join(__dirname, 'public', 'favicon.ico'))
 );
 
-// ==============================
-// 🔹 Routes
-// ==============================
+// ===== Routes =====
 const userRoutes = require('./src/routes/userRoutes');
-const productRoutes = require('./src/routes/productRoutes');
 const emailRoutes = require('./src/routes/emailRoutes');
 const themeRoutes = require('./src/routes/themeRoutes');
 
-// ✅ API ROUTES FIRST
-app.use('/api/products', productRoutes);     // JSON API: GET /api/products/categories etc.
+// ⬇️ Розділити productRoutes
+const productRoutes = require('./src/routes/productRoutes');
+const apiRouter = express.Router();
+const ssrRouter = express.Router();
 
-// ✅ SSR ROUTES AFTER
-app.use('/products', productRoutes);         // SSR pages
-app.use('/users', userRoutes);               // Mixed (SSR + API)
-app.use('/email', emailRoutes);              // Email handlers
-app.use('/', themeRoutes);                   // Theme toggle
+// API only — працює з JSON
+apiRouter.get('/', productRoutes.stack.find(r => r.route.path === '/api').route.stack[0].handle);
+apiRouter.get('/categories', productRoutes.stack.find(r => r.route.path === '/api/categories').route.stack[0].handle);
+apiRouter.get('/category/:slug', productRoutes.stack.find(r => r.route.path === '/api/category/:slug').route.stack[0].handle);
+apiRouter.get('/:productId', productRoutes.stack.find(r => r.route.path === '/api/:productId').route.stack[0].handle);
 
-// ==============================
-// 🔹 Global Error Handler
-// ==============================
+// SSR only — працює з ejs/pug
+ssrRouter.get('/db', productRoutes.stack.find(r => r.route.path === '/db').route.stack[0].handle);
+ssrRouter.get('/categories', productRoutes.stack.find(r => r.route.path === '/categories').route.stack[0].handle);
+ssrRouter.get('/category/:slug', productRoutes.stack.find(r => r.route.path === '/category/:slug').route.stack[0].handle);
+ssrRouter.get('/:categorySlug/:productSlug', productRoutes.stack.find(r => r.route.path === '/:categorySlug/:productSlug').route.stack[0].handle);
+ssrRouter.get('/', productRoutes.stack.find(r => r.route.path === '/').route.stack[0].handle);
+
+// ⬇️ Підключаємо ізоляцію
+app.use('/api/products', apiRouter); // JSON only
+app.use('/products', ssrRouter);     // SSR only
+app.use('/users', userRoutes);
+app.use('/email', emailRoutes);
+app.use('/', themeRoutes);
+
+// ===== Error handler =====
 const errorHandler = require('./src/middleware/errorHandlerMiddleware');
 app.use(errorHandler);
 
-// ==============================
-// 🔹 Server Start
-// ==============================
+// ===== Start =====
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
 });
