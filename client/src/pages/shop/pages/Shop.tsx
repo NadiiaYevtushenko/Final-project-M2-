@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
-import { resolveCategoryInfo } from '../lib/categories';
 import style from '../styles/shop.module.css';
+
+const BASE_URL = 'http://localhost:5000';
 
 type Category = {
   slug: string;
   name: string;
+  imageUrl?: string;
 };
 
 const ShopPage = () => {
@@ -42,16 +44,13 @@ const ShopPage = () => {
 
       <div className={style.grid} role="list">
         {categories.map((cat) => {
-          const info = resolveCategoryInfo(cat.slug);
-          if (!info) return null;
-
-          const { title, img } = info;
+          const image = cat.imageUrl ? `${BASE_URL}${cat.imageUrl}` : `${BASE_URL}/uploads/placeholder.png`;
 
           return (
             <Link to={`/shop/${cat.slug}`} key={cat.slug} className={style.card}>
               <article role="listitem">
-                <img src={img} alt={title} className={style.cardImg} loading="lazy" />
-                <h2 className={style.cardTitle}>{title}</h2>
+                <img src={image} alt={cat.name} className={style.cardImg} loading="lazy" />
+                <h2 className={style.cardTitle}>{cat.name}</h2>
               </article>
             </Link>
           );

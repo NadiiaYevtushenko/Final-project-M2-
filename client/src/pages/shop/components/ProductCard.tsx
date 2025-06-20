@@ -34,7 +34,7 @@ const ProductCard = ({
 
     {/* ✅ SEO-friendly маршрут */}
     <Link to={`/shop/${categorySlug}/${slug}`}>
-      <img src={image} alt={title} className={style.image} />
+      <img src={`http://localhost:5000${image}`} alt={title} className={style.image} />
     </Link>
 
     <p className={style.brand}>{brand} {model}</p>

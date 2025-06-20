@@ -114,6 +114,9 @@ app.use('/users', userRoutes);
 app.use('/email', emailRoutes);
 app.use('/', themeRoutes);
 
+// Доступ до зображень по URL типу /uploads/...
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+
 // ===== Error handler =====
 const errorHandler = require('./src/middleware/errorHandlerMiddleware');
 app.use(errorHandler);
