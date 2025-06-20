@@ -13,8 +13,8 @@ export type Product = {
 
 export async function fetchProducts(categorySlug?: string): Promise<Product[]> {
   const endpoint = categorySlug
-    ? `/products/api/category/${encodeURIComponent(categorySlug)}`
-    : `/products/api`;
+    ? `/api/products?category=${encodeURIComponent(categorySlug)}`
+    : `/api/products`;
 
   const res = await fetch(`http://localhost:5000${endpoint}`);
   if (!res.ok) throw new Error('Failed to fetch products');

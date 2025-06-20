@@ -9,6 +9,7 @@ const dotenv = require('dotenv');
 const pug = require('pug');
 const ejs = require('ejs');
 const bcrypt = require('bcryptjs');
+const contactRoutes = require('./src/routes/contactRoutes');
 
 dotenv.config();
 const app = express();
@@ -101,6 +102,7 @@ app.use('/products', ssrProductRoutes);
 app.use('/users', userRoutes);
 app.use('/email', emailRoutes);
 app.use('/', themeRoutes);
+app.use('/api/contact', contactRoutes); // ✔️ відповідає POST /api/contact
 
 // Статика для зображень
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));

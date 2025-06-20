@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import style from './RegisterModal.module.css'; // ❗ Спільні стилі
+import style from './loginForm.module.css'; 
 import FormField from '../RegisterForm/FormField';
 import SuccessModal from '../RegisterForm/SuccessModal';
 
@@ -34,7 +34,10 @@ const LoginModal = ({ onClose }: { onClose: () => void }) => {
         throw new Error(data.message || 'Помилка входу');
       }
 
+      // ✅ Збереження токена та користувача
       localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+
       setSubmitted(true);
       resetForm();
     } catch (err: any) {

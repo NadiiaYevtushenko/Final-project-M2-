@@ -12,17 +12,25 @@ const renderProductBySlug = require('../controllers/products/renderProductBySlug
 const insertOne = require('../controllers/products/insertOne');
 const deleteOne = require('../controllers/products/deleteOne');
 
-// ======= SSR ROUTES (EJS) =======
+// ========== 🔹 SSR PAGES (GET: Render views) ==========
 
-// GET: сторінки
-router.get('/db', renderAllProductsFromDB);
-router.get('/categories', renderCategoryList);
-router.get('/category/:slug', renderProductsByCategory);
-router.get('/:categorySlug/:productSlug', renderProductBySlug);
-router.get('/', renderAllProducts);
+// 🔸 All products (with optional DB note)
+router.get('/', renderAllProducts);                        // /
+router.get('/db', renderAllProductsFromDB);               // /db
 
-// POST: дії
-router.post('/create', insertOne);
-router.post('/delete/:id', deleteOne);
+// 🔸 Category listings
+router.get('/categories', renderCategoryList);            // /categories
+router.get('/category/:slug', renderProductsByCategory);  // /category/laptops
+
+// 🔸 Single product page
+router.get('/:categorySlug/:productSlug', renderProductBySlug); // /laptops/dell-xps-15
+
+// ========== 🔹 SSR ACTION ROUTES (POST: Forms) ==========
+
+// 🔸 Create product
+router.post('/create', insertOne);                        // POST from admin form
+
+// 🔸 Delete product by ID (e.g. admin panel action)
+router.post('/delete/:id', deleteOne);                    // POST from delete button/form
 
 module.exports = router;

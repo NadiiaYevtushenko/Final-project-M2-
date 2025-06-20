@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router';  
 import style from '../styles/shop.module.css';
 
 const BASE_URL = 'http://localhost:5000';
 
 type Category = {
-  slug: string;
+  slug: string;          // mapped from _id
   name: string;
   imageUrl?: string;
 };
@@ -15,12 +15,19 @@ const ShopPage = () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/products/categories')
+    fetch(`${BASE_URL}/api/products/categories`)
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
       })
-      .then(setCategories)
+      .then((data) => {
+        const mapped = data.map((cat: any) => ({
+          slug: cat._id,                  // MongoDB _id → slug
+          name: cat.name,
+          imageUrl: cat.imageUrl,
+        }));
+        setCategories(mapped);
+      })
       .catch((err) => {
         console.error('❌ Error loading categories:', err);
         setError('Не вдалося завантажити категорії товарів.');
@@ -44,7 +51,9 @@ const ShopPage = () => {
 
       <div className={style.grid} role="list">
         {categories.map((cat) => {
-          const image = cat.imageUrl ? `${BASE_URL}${cat.imageUrl}` : `${BASE_URL}/uploads/placeholder.png`;
+          const image = cat.imageUrl
+            ? `${BASE_URL}${cat.imageUrl}`
+            : `${BASE_URL}/uploads/placeholder.png`;
 
           return (
             <Link to={`/shop/${cat.slug}`} key={cat.slug} className={style.card}>

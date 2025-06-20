@@ -2,9 +2,9 @@ const Product = require('../../models/Product');
 
 module.exports = async (req, res, next) => {
   try {
-    const { fields, limit, sort } = req.query;
+    const { fields, limit, sort, category } = req.query;
 
-    // 🔍 Створюємо projection з query-параметра
+    // 🔍 Побудова проєкції
     let projection = undefined;
     if (fields) {
       projection = {};
@@ -13,8 +13,13 @@ module.exports = async (req, res, next) => {
       });
     }
 
-    // 🔄 Будуємо запит
-    const query = Product.find({}, projection);
+    // 🔍 Побудова фільтру
+    const filter = {};
+    if (category) {
+      filter.categorySlug = category;
+    }
+
+    const query = Product.find(filter, projection);
     if (sort) query.sort(sort);
     if (limit) query.limit(Number(limit));
 

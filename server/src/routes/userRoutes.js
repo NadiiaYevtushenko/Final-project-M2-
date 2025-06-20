@@ -1,17 +1,20 @@
+// usersRoutes.js
 const express = require('express');
-const passport = require('passport');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const passport = require('passport');
+
 const { dummyUsers } = require('../controllers/userController');
 const {
   getAllUsers,
   getUserById,
   createUser,
-  loginUser,
   getProfile,
   updateProfile,
   forgotPassword,
   logoutUser,
 } = require('../controllers/userController');
+
 const { protect, jwtProtect } = require('../middleware/authMiddleware');
 const { generateNextUserId } = require('../utils/idGenerator');
 
@@ -93,21 +96,36 @@ router.post('/auth/logout', (req, res, next) => {
 //
 router.post('/api/register', createUser);
 
-router.post('/api/login', (req, res, next) => {
-  passport.authenticate('local', (err, user, info) => {
-    if (err) return next(err);
-    if (!user) {
-      return res.status(401).json({ message: info?.message || 'Невірні дані' });
-    }
+// ✅ JWT-Based Login для SPA
+router.post('/api/login', (req, res) => {
+  const { email, password } = req.body;
+  const user = dummyUsers.find(u => u.email === email);
 
-    req.logIn(user, (err) => {
-      if (err) return next(err);
-      return loginUser(req, res);
-    });
-  })(req, res, next);
+  if (!user || !bcrypt.compareSync(password, user.passwordHash)) {
+    return res.status(401).json({ message: 'Invalid credentials' });
+  }
+
+  const token = jwt.sign(
+    { id: user.id, email: user.email, isAdmin: user.isAdmin },
+    process.env.JWT_SECRET || 'dev-secret',
+    { expiresIn: '2h' }
+  );
+
+  res.json({
+    token,
+    user: {
+      id: user.id,
+      email: user.email,
+      isAdmin: user.isAdmin,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    }
+  });
 });
 
-// ✅ Protected API routes using jwtProtect
+//
+// 🔹 Protected API Routes
+//
 router.get('/api/profile', jwtProtect, getProfile);
 router.put('/api/profile', jwtProtect, updateProfile);
 router.post('/api/forgot-password', forgotPassword);
