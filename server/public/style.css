@@ -5,9 +5,11 @@
   box-sizing: border-box;
 }
 
-/* ========= Root ========= */
+/* ========= Root Variables ========= */
 :root {
   --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  --radius: 8px;
+  --transition-fast: 0.2s ease;
 }
 
 /* ========= Light Theme ========= */
@@ -15,6 +17,11 @@ body[data-theme="light"] {
   --bg-color: #f9f9f9;
   --text-color: #222;
   --accent-color: #007acc;
+  --accent-hover: #005f99;
+  --danger-color: #d9534f;
+  --danger-hover: #c9302c;
+  --card-bg: #fff;
+  --input-border: #ccc;
   --footer-bg: #f1f1f1;
 }
 
@@ -23,7 +30,12 @@ body[data-theme="dark"] {
   --bg-color: #1e1e1e;
   --text-color: #e0e0e0;
   --accent-color: #66ccff;
-  --footer-bg: #2a2a2a;
+  --accent-hover: #33bbee;
+  --danger-color: #ff5f56;
+  --danger-hover: #cc4940;
+  --card-bg: #2a2a2a;
+  --input-border: #555;
+  --footer-bg: #111;
 }
 
 /* ========= Body ========= */
@@ -33,65 +45,117 @@ body {
   color: var(--text-color);
   line-height: 1.6;
   padding: 1rem;
-  overflow-x: hidden;
+  max-width: 960px;
+  margin: 0 auto;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* ========= Typography ========= */
+/* ========= Headings ========= */
 h1 {
-  font-size: 80px;
-  font-weight: 700;
+  font-size: 3rem;
   text-align: center;
   margin-bottom: 1rem;
 }
 
-p {
-  font-size: 40px;
-  text-align: center;
+h2 {
+  font-size: 2rem;
+  font-weight: bold;
   margin-bottom: 1rem;
+  padding-left: 1rem;
 }
 
-/* ========= Layout ========= */
-header {
-  padding: 1rem 0;
-  border-bottom: 2px solid #ddd;
+/* ========= Form ========= */
+form {
+  background-color: var(--card-bg);
+  padding: 1rem;
+  border-radius: var(--radius);
+  border: 1px solid var(--input-border);
+  margin: 2rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-main {
-  padding: 2rem 1rem;
-  max-width: 960px;
-  margin: 0 auto;
-}
-
-.intro {
-  text-align: center;
-}
-
-/* ========= Button for Theme ========= */
-#toggle-theme {
-  display: block;
-  margin: 1rem auto;
-  padding: 0.6rem 1.2rem;
+form input,
+form textarea {
+  padding: 0.6rem;
   font-size: 1rem;
-  border: none;
-  border-radius: 6px;
+  border-radius: var(--radius);
+  border: 1px solid var(--input-border);
+  background-color: transparent;
+  color: var(--text-color);
+}
+
+form button {
   background-color: var(--accent-color);
-  color: #fff;
+  color: white;
+  font-size: 1rem;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: var(--radius);
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color var(--transition-fast);
 }
 
-#toggle-theme:hover {
-  background-color: #005f99;
+form button:hover {
+  background-color: var(--accent-hover);
 }
 
-/* ========= Image ========= */
+/* ========= List of Products ========= */
+ul {
+  list-style: none;
+  padding-left: 1rem;
+  margin-bottom: 2rem;
+}
+
+li {
+  background: var(--card-bg);
+  margin-bottom: 0.75rem;
+  padding: 1rem;
+  border-left: 4px solid var(--accent-color);
+  border-radius: var(--radius);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+li a {
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+li a:hover {
+  text-decoration: underline;
+}
+
+li form {
+  display: inline;
+}
+
+/* ========= Buttons (Delete etc) ========= */
+button[type="submit"] {
+  background-color: var(--danger-color);
+  color: white;
+  border: none;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.9rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+button[type="submit"]:hover {
+  background-color: var(--danger-hover);
+}
+
+/* ========= Image Styling ========= */
 img {
   display: block;
-  margin: 2rem auto;
   max-width: 100%;
-  height: auto;
-  border-radius: 12px;
+  margin: 2rem auto;
+  border-radius: var(--radius);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
 }
@@ -106,18 +170,24 @@ footer {
   padding: 1rem 0;
   text-align: center;
   font-size: 0.9rem;
-  border-top: 1px solid #ccc;
+  border-top: 1px solid var(--input-border);
+  margin-top: 3rem;
 }
 
-h2 {
-  font-size: 40px;
-  font-weight: 700;
-  padding-left: 50px;
-  margin-bottom: 1rem;
+/* ========= Theme Toggle ========= */
+#toggle-theme {
+  margin: 2rem auto;
+  display: block;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: var(--radius);
+  background-color: var(--accent-color);
+  color: white;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
 }
 
-ul {
-  list-style: none;
-  padding-left: 50px;
-  margin-bottom: 2rem;
+#toggle-theme:hover {
+  background-color: var(--accent-hover);
 }

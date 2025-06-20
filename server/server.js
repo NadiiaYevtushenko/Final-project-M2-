@@ -88,33 +88,21 @@ app.get('/favicon.ico', (req, res) =>
 const userRoutes = require('./src/routes/userRoutes');
 const emailRoutes = require('./src/routes/emailRoutes');
 const themeRoutes = require('./src/routes/themeRoutes');
+const productApiRoutes = require('./src/routes/productApiRoutes');
+const ssrProductRoutes = require('./src/routes/ssrProductRoutes');
 
-// ⬇️ Розділити productRoutes
-const productRoutes = require('./src/routes/productRoutes');
-const apiRouter = express.Router();
-const ssrRouter = express.Router();
+// 🔹 API → JSON
+app.use('/api/products', productApiRoutes);
 
-// API only — працює з JSON
-apiRouter.get('/', productRoutes.stack.find(r => r.route.path === '/api').route.stack[0].handle);
-apiRouter.get('/categories', productRoutes.stack.find(r => r.route.path === '/api/categories').route.stack[0].handle);
-apiRouter.get('/category/:slug', productRoutes.stack.find(r => r.route.path === '/api/category/:slug').route.stack[0].handle);
-apiRouter.get('/:productId', productRoutes.stack.find(r => r.route.path === '/api/:productId').route.stack[0].handle);
+// 🔹 SSR → HTML
+app.use('/products', ssrProductRoutes);
 
-// SSR only — працює з ejs/pug
-ssrRouter.get('/db', productRoutes.stack.find(r => r.route.path === '/db').route.stack[0].handle);
-ssrRouter.get('/categories', productRoutes.stack.find(r => r.route.path === '/categories').route.stack[0].handle);
-ssrRouter.get('/category/:slug', productRoutes.stack.find(r => r.route.path === '/category/:slug').route.stack[0].handle);
-ssrRouter.get('/:categorySlug/:productSlug', productRoutes.stack.find(r => r.route.path === '/:categorySlug/:productSlug').route.stack[0].handle);
-ssrRouter.get('/', productRoutes.stack.find(r => r.route.path === '/').route.stack[0].handle);
-
-// ⬇️ Підключаємо ізоляцію
-app.use('/api/products', apiRouter); // JSON only
-app.use('/products', ssrRouter);     // SSR only
+// 🔹 Інші
 app.use('/users', userRoutes);
 app.use('/email', emailRoutes);
 app.use('/', themeRoutes);
 
-// Доступ до зображень по URL типу /uploads/...
+// Статика для зображень
 app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
 
 // ===== Error handler =====

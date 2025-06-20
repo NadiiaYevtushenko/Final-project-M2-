@@ -1,5 +1,18 @@
 <%- include('../partials/header') %>
+
   <h2>Products from MongoDB</h2>
+
+  <!-- 🔹 Форма додавання -->
+  <form action="/products/create" method="POST" style="margin-bottom: 2rem;">
+    <input type="text" name="name" placeholder="Назва" required>
+    <input type="text" name="category" placeholder="Категорія" required>
+    <input type="number" name="price" placeholder="Ціна" step="0.01" required>
+    <input type="text" name="currency" value="PLN">
+    <input type="text" name="imageUrl" placeholder="URL зображення">
+    <textarea name="description" placeholder="Опис" rows="2"></textarea>
+    <button type="submit">➕ Додати</button>
+  </form>
+
   <ul>
     <% products.forEach(product=> { %>
       <li>
@@ -7,11 +20,18 @@
         <a href="/products/category/<%= product.categorySlug %>">
           <%= product.category || 'Без категорії' %>
         </a>
+        <br>
         Назва:
         <a href="/products/<%= product.categorySlug %>/<%= product.slug %>">
           <%= product.name %>
-        </a> <!-- ✅ -->
+        </a>
+
+        <!-- 🔴 Кнопка видалення -->
+        <form action="/products/delete/<%= product._id %>" method="POST" style="display:inline;">
+          <button type="submit">🗑</button>
+        </form>
       </li>
       <% }) %>
   </ul>
+
   <%- include('../partials/footer') %>
