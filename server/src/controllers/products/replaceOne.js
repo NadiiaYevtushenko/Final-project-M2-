@@ -1,9 +1,15 @@
 const Product = require('../../models/Product');
 const slugify = require('../../utils/slugify');
+const mongoose = require('mongoose');
 
 module.exports = async (req, res, next) => {
   try {
     const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: 'Invalid product ID' });
+    }
+
     const {
       name,
       category,
@@ -17,12 +23,12 @@ module.exports = async (req, res, next) => {
       discountPercent
     } = req.body;
 
-    // Перевірка на обовʼязкові поля
     if (!name || !category || price == null || !currency) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
     const replacement = {
+      _id: id, // важливо: _id має бути збережено
       name,
       category,
       price,
@@ -37,17 +43,16 @@ module.exports = async (req, res, next) => {
       categorySlug: slugify(category),
     };
 
-    const replaced = await Product.findOneAndReplace(
-      { _id: id },
-      replacement,
-      { new: true, overwrite: true }
-    );
+    const result = await Product.replaceOne({ _id: id }, replacement, {
+      runValidators: true,
+    });
 
-    if (!replaced) {
-      return res.status(404).json({ message: 'Product not found' });
+    if (result.modifiedCount === 0) {
+      return res.status(404).json({ message: 'Product not found or unchanged' });
     }
 
-    res.json(replaced);
+    const updated = await Product.findById(id);
+    res.json(updated);
   } catch (err) {
     next(err);
   }

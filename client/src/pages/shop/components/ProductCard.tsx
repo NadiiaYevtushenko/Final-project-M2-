@@ -1,6 +1,5 @@
 import { Link } from 'react-router'; 
-import style from '../components/ProductCard.module.css';
-
+import style from './ProductCard.module.css'; // правильний шлях
 
 type ProductCardProps = {
   id: string;
@@ -11,8 +10,8 @@ type ProductCardProps = {
   oldPrice?: number;
   image: string;
   discountPercent?: number;
-  categorySlug: string;  
-  slug: string;    
+  categorySlug: string;
+  slug: string;
 };
 
 const ProductCard = ({
@@ -32,7 +31,6 @@ const ProductCard = ({
       {discountPercent && <span className={style.discount}>-{discountPercent}%</span>}
     </div>
 
-    {/* ✅ SEO-friendly маршрут */}
     <Link to={`/shop/${categorySlug}/${slug}`}>
       <img src={`http://localhost:5000${image}`} alt={title} className={style.image} />
     </Link>

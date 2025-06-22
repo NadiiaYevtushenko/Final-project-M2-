@@ -2,10 +2,10 @@
 
   <h2>Категорії товарів</h2>
   <ul>
-    <% categories.forEach(cat=> { %>
+    <% categories.forEach(category=> { %>
       <li>
-        <a href="/products/category/<%= cat._id %>">
-          <%= cat.category %>
+        <a href="/products/category/<%= category._id %>">
+          <%= category.name || '❌ без назви' %>
         </a>
       </li>
       <% }) %>

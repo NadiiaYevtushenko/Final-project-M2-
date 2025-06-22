@@ -15,10 +15,15 @@ const renderAllProducts = async (req, res, next) => {
 const renderCategoryList = async (req, res, next) => {
   try {
     const categories = await Product.aggregate([
-      { $group: { _id: '$categorySlug', category: { $first: '$category' } } }
+      {
+        $group: {
+          _id: '$categorySlug',
+          category: { $first: '$category' },
+        },
+      },
     ]);
-
-    res.render('ejs/products/categories.ejs', {
+    console.log(categories); 
+    res.render('ejs/products/categories', {
       title: 'Категорії товарів',
       categories,
     });
@@ -132,27 +137,27 @@ const getCategoryList = async (req, res) => {
   }
 };
 
-// const createProduct = async (req, res, next) => {
-//   try {
-//     const { name, price, description, imageUrl, category, currency } = req.body;
+const createProduct = async (req, res, next) => {
+  try {
+    const { name, price, description, imageUrl, category, currency } = req.body;
 
-//     const newProduct = new Product({
-//       name,
-//       price,
-//       description,
-//       imageUrl,
-//       category,
-//       currency,
-//       slug: slugify(name),
-//       categorySlug: slugify(category),
-//     });
+    const newProduct = new Product({
+      name,
+      price,
+      description,
+      imageUrl,
+      category,
+      currency,
+      slug: slugify(name),
+      categorySlug: slugify(category),
+    });
 
-//     const savedProduct = await newProduct.save();
-//     res.status(201).json(savedProduct);
-//   } catch (err) {
-//     next(err);
-//   }
-// };
+    const savedProduct = await newProduct.save();
+    res.status(201).json(savedProduct);
+  } catch (err) {
+    next(err);
+  }
+};
 
 const updateProduct = async (req, res, next) => {
   try {
@@ -198,7 +203,7 @@ module.exports = {
   getProductById,
   getProductsByCategory,
   getCategoryList,
-  // createProduct,
+  createProduct,
   updateProduct,
   deleteProduct,
 };

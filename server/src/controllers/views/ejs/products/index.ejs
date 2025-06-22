@@ -13,25 +13,29 @@
     <button type="submit">➕ Додати</button>
   </form>
 
-  <ul>
-    <% products.forEach(product=> { %>
-      <li>
-        Категорія:
-        <a href="/products/category/<%= product.categorySlug %>">
-          <%= product.category || 'Без категорії' %>
-        </a>
-        <br>
-        Назва:
-        <a href="/products/<%= product.categorySlug %>/<%= product.slug %>">
-          <%= product.name %>
-        </a>
+  <% if (!products || products.length===0) { %>
+    <p style="color: red;">❌ Немає товарів для відображення</p>
+    <% } else { %>
+      <ul>
+        <% products.forEach(product=> { %>
+          <li>
+            Категорія:
+            <a href="/products/category/<%= product.categorySlug %>">
+              <%= product.category || 'Без категорії' %>
+            </a>
+            <br>
+            Назва:
+            <a href="/products/<%= product.categorySlug %>/<%= product.slug %>">
+              <%= product.name %>
+            </a>
 
-        <!-- 🔴 Кнопка видалення -->
-        <form action="/products/delete/<%= product._id %>" method="POST" style="display:inline;">
-          <button type="submit">🗑</button>
-        </form>
-      </li>
-      <% }) %>
-  </ul>
+            <!-- 🔴 Кнопка видалення -->
+            <form action="/products/delete/<%= product._id %>" method="POST" style="display:inline;">
+              <button type="submit">🗑</button>
+            </form>
+          </li>
+          <% }) %>
+      </ul>
+      <% } %>
 
-  <%- include('../partials/footer') %>
+        <%- include('../partials/footer') %>

@@ -5,7 +5,7 @@ import './ProductsPage.css';
 import type { Product } from '../../../api/productsApi';
 
 const ProductsPage = () => {
-  const { slug } = useParams(); // /shop/category/:slug
+  const { slug } = useParams(); // /shop/:slug
   const [products, setProducts] = useState<Product[]>([]);
   const [error, setError] = useState('');
 

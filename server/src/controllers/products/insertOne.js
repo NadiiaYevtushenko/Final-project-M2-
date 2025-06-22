@@ -1,9 +1,19 @@
 const Product = require('../../models/Product');
-const slugify = require('../../utils/slugify');
 
 module.exports = async (req, res, next) => {
   try {
-    const { name, price, description, imageUrl, category, currency } = req.body;
+    const {
+      name,
+      price,
+      description,
+      imageUrl,
+      category,
+      currency,
+      brand,
+      model,
+      oldPrice,
+      discountPercent,
+    } = req.body;
 
     const newProduct = new Product({
       name,
@@ -12,8 +22,11 @@ module.exports = async (req, res, next) => {
       imageUrl,
       category,
       currency,
-      slug: slugify(name),
-      categorySlug: slugify(category),
+      brand,
+      model,
+      oldPrice,
+      discountPercent,
+      //  НЕ включаємо slug та categorySlug — вони згенеруються в pre('save')
     });
 
     const savedProduct = await newProduct.save();

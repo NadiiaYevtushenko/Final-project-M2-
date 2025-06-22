@@ -8,7 +8,14 @@
         <strong>
           <%= product.name %>
         </strong>
-        <% }) %>
+        <br>
+        <%= product.description %>
+          <br>
+          <a href="/products/<%= product.categorySlug %>/<%= product.slug %>">
+            Детальніше
+          </a>
+          </strong>
+          <% }) %>
   </ul>
 
   <%- include('../partials/footer') %>
