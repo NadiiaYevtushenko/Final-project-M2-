@@ -2,7 +2,7 @@ const BASE_URL = 'http://localhost:5000';
 
 export const resolveCategoryInfo = (
   categoryName: string,
-  imageUrlFromDb?: string // <- це з MongoDB
+  imageUrlFromDb?: string  
 ) => {
   const fallback = `${BASE_URL}/uploads/placeholder.jpg`;
 

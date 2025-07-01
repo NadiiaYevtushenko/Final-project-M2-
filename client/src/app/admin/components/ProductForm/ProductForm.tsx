@@ -2,27 +2,33 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
 type ProductFormValues = {
-  title: string;
+  name: string; // ✅ раніше було title
   brand: string;
   model: string;
   price: number;
   imageUrl: string;
+  category: string;
+  currency: string;
 };
 
 const initialValues: ProductFormValues = {
-  title: '',
+  name: '',
   brand: '',
   model: '',
   price: 0,
   imageUrl: '',
+  category: '',
+  currency: 'UAH',
 };
 
 const validationSchema = Yup.object({
-  title: Yup.string().required('Title is required'),
+  name: Yup.string().required('Name is required'),
   brand: Yup.string().required('Brand is required'),
   model: Yup.string().required('Model is required'),
   price: Yup.number().min(0, 'Price must be positive').required('Price is required'),
   imageUrl: Yup.string().url('Invalid image URL').required('Image URL is required'),
+  category: Yup.string().required('Category is required'),
+  currency: Yup.string().required('Currency is required'),
 });
 
 const ProductForm = () => {
@@ -31,7 +37,7 @@ const ProductForm = () => {
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
       try {
-        const response = await fetch('http://localhost:5000/products/api', {
+        const response = await fetch('http://localhost:5000/api/products', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -53,16 +59,16 @@ const ProductForm = () => {
   return (
     <form onSubmit={formik.handleSubmit} className="product-form">
       <div>
-        <label htmlFor="title">Title</label>
+        <label htmlFor="name">Name</label>
         <input
-          id="title"
-          name="title"
+          id="name"
+          name="name"
           type="text"
           onChange={formik.handleChange}
-          value={formik.values.title}
+          value={formik.values.name}
         />
-        {formik.errors.title && formik.touched.title && (
-          <div className="error">{formik.errors.title}</div>
+        {formik.errors.name && formik.touched.name && (
+          <div className="error">{formik.errors.name}</div>
         )}
       </div>
 
@@ -119,6 +125,38 @@ const ProductForm = () => {
         />
         {formik.errors.imageUrl && formik.touched.imageUrl && (
           <div className="error">{formik.errors.imageUrl}</div>
+        )}
+      </div>
+
+      <div>
+        <label htmlFor="category">Category</label>
+        <input
+          id="category"
+          name="category"
+          type="text"
+          onChange={formik.handleChange}
+          value={formik.values.category}
+        />
+        {formik.errors.category && formik.touched.category && (
+          <div className="error">{formik.errors.category}</div>
+        )}
+      </div>
+
+      <div>
+        <label htmlFor="currency">Currency</label>
+        <select
+          id="currency"
+          name="currency"
+          onChange={formik.handleChange}
+          value={formik.values.currency}
+        >
+          <option value="UAH">UAH</option>
+          <option value="USD">USD</option>
+          <option value="EUR">EUR</option>
+          <option value="PLN">PLN</option>
+        </select>
+        {formik.errors.currency && formik.touched.currency && (
+          <div className="error">{formik.errors.currency}</div>
         )}
       </div>
 

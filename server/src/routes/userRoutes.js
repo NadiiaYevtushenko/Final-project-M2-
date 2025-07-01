@@ -1,4 +1,3 @@
-// usersRoutes.js
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -111,16 +110,23 @@ router.post('/api/login', (req, res) => {
     { expiresIn: '2h' }
   );
 
-  res.json({
-    token,
-    user: {
-      id: user.id,
-      email: user.email,
-      isAdmin: user.isAdmin,
-      firstName: user.firstName,
-      lastName: user.lastName,
-    }
-  });
+  res
+    .cookie('token', token, {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: 2 * 60 * 60 * 1000, // 2 години
+    })
+    .json({
+      token,  // Ось сюди додано JWT токен
+      user: {
+        id: user.id,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        firstName: user.firstName,
+        lastName: user.lastName,
+      },
+    });
 });
 
 //

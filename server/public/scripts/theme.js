@@ -1,18 +1,15 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const button = document.getElementById("toggle-theme");
-  if (!button) return;
+document.getElementById('toggle-theme')?.addEventListener('click', async () => {
+  const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
 
-  button.addEventListener("click", async () => {
-    const current = document.body.getAttribute("data-theme") || "light";
-    const next = current === "dark" ? "light" : "dark";
-
-    await fetch("/set-theme", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",
-      body: JSON.stringify({ theme: next })
+  try {
+    await fetch('/set-theme', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ theme: newTheme })
     });
-
-    location.reload();
-  });
+    location.reload();  
+  } catch (err) {
+    console.error('Помилка перемикання теми:', err);
+  }
 });

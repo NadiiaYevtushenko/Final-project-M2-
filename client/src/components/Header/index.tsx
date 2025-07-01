@@ -9,12 +9,12 @@ import Logo from '../../components/Logo/Logo';
 import AuthMenu from '../../components/AuthMenu/AuthMenu';
 import store from '../../app/store';
 import style from './header.module.css';
-import { useAuth } from '../../app/AuthContext'; // ⬅️ додаємо
+import { useAuth } from '../../app/AuthContext';
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const { isAuthenticated, user } = useAuth(); // ⬅️ читаємо firstName
+  const { isAuthenticated, user, isAdmin } = useAuth();
 
   const toggleMenu = () => setMenuOpen((prev) => !prev);
 
@@ -42,6 +42,24 @@ const Header = () => {
                   </Link>
                 </li>
               ))}
+
+              {/* 🔒 Приватні посилання */}
+              {isAuthenticated && (
+                <li>
+                  <Link to="/profile" className={style.navLink}>
+                    <span>Профіль</span>
+                    <span className={style.spanLink}></span>
+                  </Link>
+                </li>
+              )}
+              {isAdmin && (
+                <li>
+                  <Link to="/admin" className={style.navLink}>
+                    <span>Адмінка</span>
+                    <span className={style.spanLink}></span>
+                  </Link>
+                </li>
+              )}
             </ul>
           </div>
 
@@ -88,6 +106,23 @@ const Header = () => {
                     </Link>
                   </li>
                 ))}
+
+                {isAuthenticated && (
+                  <li>
+                    <Link to="/profile" className={style.navLink} onClick={toggleMenu}>
+                      <span>Профіль</span>
+                      <span className={style.spanLink}></span>
+                    </Link>
+                  </li>
+                )}
+                {isAdmin && (
+                  <li>
+                    <Link to="/admin" className={style.navLink} onClick={toggleMenu}>
+                      <span>Адмінка</span>
+                      <span className={style.spanLink}></span>
+                    </Link>
+                  </li>
+                )}
               </ul>
             )}
           </div>

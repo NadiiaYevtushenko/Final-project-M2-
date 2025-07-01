@@ -1,5 +1,5 @@
 import { Link } from 'react-router'; 
-import style from './ProductCard.module.css'; // правильний шлях
+import style from './ProductCard.module.css';  
 
 type ProductCardProps = {
   id: string;

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router';
+import { useNavigate, Link } from 'react-router-dom'; 
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import { useAuth } from '../../app/AuthContext';
 import style from './AuthMenu.module.css';
@@ -11,6 +11,7 @@ const AuthMenu = () => {
   const [open, setOpen] = useState(false);
   const [showRegisterModal, setShowRegisterModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const navigate = useNavigate(); // редірект після logout
 
   const handleLoginSuccess = () => {
     setShowLoginModal(false);
@@ -20,6 +21,12 @@ const AuthMenu = () => {
   const handleRegisterSuccess = () => {
     setShowRegisterModal(false);
     setOpen(false);
+  };
+
+  const handleLogout = () => {
+    logout();
+    setOpen(false);
+    navigate('/');
   };
 
   return (
@@ -76,10 +83,7 @@ const AuthMenu = () => {
                 </Link>
                 <button
                   className={style.dropdownItem}
-                  onClick={() => {
-                    setOpen(false);
-                    logout();
-                  }}
+                  onClick={handleLogout}
                 >
                   Вийти
                 </button>

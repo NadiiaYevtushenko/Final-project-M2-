@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router'; 
+import { Routes, Route } from 'react-router-dom'; 
 import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import { ToastContainer } from 'react-toastify';
@@ -20,6 +20,7 @@ import ProductsPage from '../pages/shop/pages/ProductsPage';
 import AdminPage from '../pages/admin/AdminPage'; 
 
 import Profile from '../pages/profile/Profile'; 
+import ProtectedRoute from '../app/ProtectedRoute';
 
 config.autoAddCss = false;
 
@@ -36,13 +37,30 @@ const App = () => {
               <Route path="/services" element={<ServicesPage />} />
               <Route path="/shop" element={<ShopPage />} />
               <Route path="/shop/:slug" element={<ProductsPage />} />
-              <Route path="/admin" element={<AdminPage />} />
-              {/* <Route path="/shop/:categorySlug/:productSlug" element={<ProductPage />} /> */}
+
+              {/* ✅ Захищені маршрути */}
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute adminOnly={true}>
+                    <AdminPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Fallback для невідомих маршрутів */}
               <Route path="*" element={<HomePage />} errorElement={<ErrorPage />} />
-              <Route path="/profile" element={<Profile />} />
             </Routes>
+            <ToastContainer />
           </Wrapper>
-          <ToastContainer />
         </main>
         <Footer />
       </ThemeProvider>

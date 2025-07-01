@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import style from './loginForm.module.css'; 
+import style from './loginForm.module.css';
 import FormField from '../RegisterForm/FormField';
 import SuccessModal from '../RegisterForm/SuccessModal';
 
@@ -23,19 +23,25 @@ const LoginModal = ({ onClose }: { onClose: () => void }) => {
     try {
       const res = await fetch('http://localhost:5000/users/api/login', {
         method: 'POST',
-        credentials: 'include',
+        credentials: 'include', // 🔒 необхідно для надсилання cookie
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values),
       });
 
+      const contentType = res.headers.get('content-type');
+      if (!contentType?.includes('application/json')) {
+        const raw = await res.text();
+        throw new Error('Невірна відповідь від сервера: ' + raw.slice(0, 100));
+      }
+
       const data = await res.json();
+      console.log('Login response:', data);
 
       if (!res.ok) {
         throw new Error(data.message || 'Помилка входу');
       }
 
-      // ✅ Збереження токена та користувача
-      localStorage.setItem('token', data.token);
+      // ✅ Збереження користувача (опціонально)
       localStorage.setItem('user', JSON.stringify(data.user));
 
       setSubmitted(true);

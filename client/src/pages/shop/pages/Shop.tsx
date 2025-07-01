@@ -5,7 +5,7 @@ import style from '../styles/shop.module.css';
 const BASE_URL = 'http://localhost:5000';
 
 type Category = {
-  slug: string;          // mapped from _id
+  slug: string;     
   name: string;
   imageUrl?: string;
 };
@@ -22,7 +22,7 @@ const ShopPage = () => {
       })
       .then((data) => {
         const mapped = data.map((cat: any) => ({
-          slug: cat._id,                  // MongoDB _id → slug
+          slug: cat._id,                
           name: cat.name,
           imageUrl: cat.imageUrl,
         }));

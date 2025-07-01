@@ -1,12 +1,10 @@
 import { useState } from 'react';
 import { Formik, Form } from 'formik';
-import type { FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import style from './loginForm.module.css';
 import FormField from '../RegisterForm/FormField';
 import { useAuth } from '../../../AuthContext';
 import ForgotPasswordModal from '../PasswordRecovery/ForgotPasswordModal';
-
 
 const validationSchema = Yup.object({
   email: Yup.string().email('Невалідна пошта').required('Email обов’язковий'),
@@ -28,31 +26,25 @@ const LoginModal = ({ onClose, onSuccess }: Props) => {
   const [error, setError] = useState('');
   const [showForgotModal, setShowForgotModal] = useState(false);
 
-  const handleSubmit = async (values: typeof initialValues, { resetForm }: FormikHelpers<typeof initialValues>) => {
+  const handleSubmit = async (values: typeof initialValues, { resetForm }: any) => {
     try {
       const res = await fetch('http://localhost:5000/users/api/login', {
         method: 'POST',
-        credentials: 'include',
+        credentials: 'include', // необхідно для cookie
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values),
       });
 
-      const contentType = res.headers.get('content-type');
-      if (!contentType?.includes('application/json')) {
-        const raw = await res.text();
-        throw new Error('Невірна відповідь від сервера: ' + raw.slice(0, 100));
-      }
-
       const data = await res.json();
 
-      if (!res.ok) {
-        throw new Error(data.message || 'Помилка авторизації');
-      }
+      if (!res.ok) throw new Error(data.message || 'Помилка авторизації');
 
-      login(data.user);  
+      // Передаємо user і token (token може бути undefined, якщо бекенд не повертає)
+      login(data.user, data.token || '');
+
       resetForm();
       onClose();
-      onSuccess();  
+      onSuccess();
     } catch (err: any) {
       setError(err.message);
     }
@@ -66,11 +58,7 @@ const LoginModal = ({ onClose, onSuccess }: Props) => {
         </button>
         <h2 className={style.sectionTitle}>Вхід</h2>
 
-        <Formik
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-        >
+        <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
           {({ errors, touched }) => (
             <Form>
               <FormField
@@ -111,9 +99,7 @@ const LoginModal = ({ onClose, onSuccess }: Props) => {
           )}
         </Formik>
 
-        {showForgotModal && (
-          <ForgotPasswordModal onClose={() => setShowForgotModal(false)} />
-        )}
+        {showForgotModal && <ForgotPasswordModal onClose={() => setShowForgotModal(false)} />}
       </div>
     </div>
   );

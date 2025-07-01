@@ -33,12 +33,14 @@ type Props = {
 const RegisterModal = ({ onClose, onSuccess }: Props) => {
   const [submitted, setSubmitted] = useState(false);
   const { login } = useAuth();
+  const [error, setError] = useState('');
 
   const handleSubmit = async (
     values: typeof initialValues,
     { resetForm }: FormikHelpers<typeof initialValues>
   ) => {
     try {
+      // 🔹 Реєстрація
       const registerRes = await fetch('http://localhost:5000/users/api/register', {
         method: 'POST',
         credentials: 'include',
@@ -46,9 +48,10 @@ const RegisterModal = ({ onClose, onSuccess }: Props) => {
         body: JSON.stringify(values),
       });
 
-      const contentType = registerRes.headers.get('Content-Type') || '';
-      if (!contentType.includes('application/json')) {
-        throw new Error('Сервер повернув не JSON');
+      const registerContentType = registerRes.headers.get('Content-Type') || '';
+      if (!registerContentType.includes('application/json')) {
+        const raw = await registerRes.text();
+        throw new Error('Сервер повернув не JSON: ' + raw.slice(0, 100));
       }
 
       const registerData = await registerRes.json();
@@ -56,6 +59,7 @@ const RegisterModal = ({ onClose, onSuccess }: Props) => {
         throw new Error(registerData.message || 'Помилка під час реєстрації');
       }
 
+      // 🔹 Логін після успішної реєстрації
       const loginRes = await fetch('http://localhost:5000/users/api/login', {
         method: 'POST',
         credentials: 'include',
@@ -68,7 +72,8 @@ const RegisterModal = ({ onClose, onSuccess }: Props) => {
 
       const loginContentType = loginRes.headers.get('Content-Type') || '';
       if (!loginContentType.includes('application/json')) {
-        throw new Error('Сервер повернув не JSON під час входу');
+        const raw = await loginRes.text();
+        throw new Error('Сервер повернув не JSON під час входу: ' + raw.slice(0, 100));
       }
 
       const loginData = await loginRes.json();
@@ -76,12 +81,14 @@ const RegisterModal = ({ onClose, onSuccess }: Props) => {
         throw new Error(loginData.message || 'Реєстрація пройшла, але вхід не вдався');
       }
 
-      login(loginData.user);
-      onSuccess();
+      // Передаємо user і token (token може бути undefined, якщо бекенд не повертає)
+      login(loginData.user, loginData.token || '');
+
       resetForm();
+      onSuccess();
       setSubmitted(true);
     } catch (err: any) {
-      alert(err.message);
+      setError(err.message);
     }
   };
 
@@ -148,6 +155,8 @@ const RegisterModal = ({ onClose, onSuccess }: Props) => {
                 touched={touched.confirmPassword}
                 error={errors.confirmPassword}
               />
+
+              {error && <div className={style.error}>{error}</div>}
 
               <button
                 type="submit"
